@@ -1,0 +1,10 @@
+extend ../../views/layout
+
+block extra_css
+  link(rel="stylesheet", href="style.css")
+
+block var
+  - ControllerName = "<%= name %>"
+
+block content
+  h1 <%= name %>

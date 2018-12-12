@@ -1,0 +1,3 @@
+body[data-include*="<%= name %>"], body[data-controller="<%= name %>"] {
+    background: #ffff00;
+}

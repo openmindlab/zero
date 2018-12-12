@@ -1,0 +1,14 @@
+extend layout
+
+block content
+  ul
+    for comp in components
+      li
+        a(href=`views/${comp}/index.html`)= comp
+
+
+  div(data-component="First" data-first-numbi="23" data-first-boolt="true" data-first-boolf="false" data-first-numbf="234.234234234234234" data-first-str="dfs234134sdvas")
+    h3 First
+    div(data-component="Second")
+      input(type="text")
+      button Click me

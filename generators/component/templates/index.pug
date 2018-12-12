@@ -1,0 +1,8 @@
+extend ../../views/layout
+
+block extra_css
+  link(rel="stylesheet", href="style.css")
+
+block content
+  div(data-component="<%= name %>")
+    span Component <%= name %>

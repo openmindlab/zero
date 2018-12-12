@@ -1,0 +1,20 @@
+- var ControllerName = "Global";
+- var Includes = [];
+block var
+html
+  head
+    block extra_css
+    style
+      | div.test-active { background-color: green};
+  body(data-controller=ControllerName, data-includes=Includes.join(",") )
+
+    h1 Project Zero
+
+    block content
+
+    footer.main
+
+
+    block extra_js
+
+    script(src="zero.dev.js")
