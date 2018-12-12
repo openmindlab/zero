@@ -158,12 +158,15 @@ const WRAP = function() {
 
 
   const innerHTMLset = HTMLElement.prototype.__lookupSetter__('innerHTML');
+  const innerHTMLget = HTMLElement.prototype.__lookupGetter__('innerHTML');
   HTMLElement.prototype.__defineSetter__('innerHTML', function(value) {
     DestroyComponents(this, true);
     let ret = innerHTMLset.call(this, value);
     InitComponents(this, true);
     return ret;
   });
+
+  HTMLElement.prototype.__defineGetter__('innerHTML', innerHTMLget );
 
 }
 
