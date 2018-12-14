@@ -1,11 +1,11 @@
 {
   "name": "@openmind/zero",
-  "version": "1.0.1",
+  "version": "1.0.0",
   "description": "The Openmind Zero framework project",
   "main": "build/zero-core.js",
   "repository": {
     "type": "git",
-    "url": "https://stash.openmindonline.it/projects/OC/repos/zero"
+    "url": "https://stash.openmindonline.it/projects/OMZERO/repos/zero"
   },
   "author": "Openmind Lab",
   "license": "MIT",
@@ -13,10 +13,16 @@
     "yeoman-generator"
   ],
   "devDependencies": {
-    "babel-core": "^6.26.0",
-    "babel-loader": "^7.1.2",
-    "babel-preset-env": "^1.6.1",
-    "babel-register": "^6.26.0",
+    "babel-core": "6.26.3",
+    "babel-loader": "7.1.5",
+    "babel-preset-env": "1.7.0",
+    "babel-register": "6.26.0",
+    "webpack-stream": "5.2.1",
+    "webpack": "4.27.1",
+    "webpack-cli": "3.1.2",
+    "webpack-merge": "4.1.5",
+    "webpack-dev-server": "3.1.10",
+    "semver": "5.5.0",
     "chai": "4.1.2",
     "express": "^4.16.2",
     "karma": "^2.0.4",
@@ -32,18 +38,12 @@
     "karma-spec-reporter": "^0.0.32",
     "mocha": "^5.0.0",
     "phantomjs-prebuilt": "^2.1.7",
-    "pug": "^2.0.1",
-    "semver": "5.5.0",
-    "webpack-stream": "^4.0.0",
-    "webpack": "^4.20.2",
-    "webpack-cli": "^3.1.2",
-    "webpack-merge": "^4.1.4",
-    "webpack-dev-server": "3.1.10"
+    "pug": "^2.0.1"
   },
   "dependencies": {
-    "promise-js": "0.0.6",
-    "@openmind/litelog": "3.0.8",
-    "yeoman-generator": "3.0.0",
+    "promise-js": "0.0.7",
+    "@openmind/litelog": "3.1.0",
+    "yeoman-generator": "3.1.1",
     "@openmind/zero-events": "1.0.0"
   },
   "scripts": {
