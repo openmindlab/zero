@@ -1,6 +1,5 @@
 const WbMerge = require("webpack-merge");
 
-
 function freeze_version() {
 
   let level = "patch";
@@ -54,13 +53,14 @@ module.exports = WbMerge(WbConfig, {
   mode: 'production',
 
   entry: {
-    zero: './src/core/core.js'
+    zero: "./src/core/core.js"
   },
 
   watch: false,
 
   output: {
     filename: "zero-core.js",
+    chunkFilename: "component-[name].js",
     libraryTarget: 'umd',
     library: 'zero',
     umdNamedDefine: true,

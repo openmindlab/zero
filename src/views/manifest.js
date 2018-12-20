@@ -62,10 +62,8 @@ function LoadPages(Context) {
 LoadComponents( require.context("../components", true, /\.js$/) );
 LoadPages( require.context("../pages", true, /\.js$/) );
 
-// Zero.Dom = jQuery;
+// import LazyComponent from '../core/lazy-component';
+// Components.create('First', LazyComponent('First') );
 
-
-
-
-Zero.start();
+Zero.start({});
 window.Zero = Zero;

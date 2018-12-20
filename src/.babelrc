@@ -1,0 +1,14 @@
+{
+  "plugins": ["syntax-dynamic-import"],
+  "presets": [
+    [
+      "env",
+      {
+        "targets": {
+          "browsers": ["> 1%", "last 5 versions", "ie >= 10"]
+        },
+        "modules": false
+      }
+    ]
+  ]
+}

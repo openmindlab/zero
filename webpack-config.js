@@ -12,7 +12,7 @@ module.exports = {
 
   mode: 'development',
 
-  devtool: 'eval',
+  // devtool: 'eval',
   watch: true,
 
   entry:  ENTRIES,
@@ -50,7 +50,8 @@ module.exports = {
     filename: "[name].dev.js",
     path: Path.resolve(__dirname, 'build'),
     pathinfo: true,
-    sourceMapFilename: "[file].js.map"
+    sourceMapFilename: "[file].js.map",
+    chunkFilename: "component-[name].dev.js"
   },
 
   devServer: {
