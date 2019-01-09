@@ -8,15 +8,19 @@ let _fake_broadcast_ = new Events({});
 
 const Broadcast = Object.create({
 
-  cast(msg, obj) {
+  cast(msg, obj, immediate) {
     if ( !_started_) {
-      _stack_.push({msg: msg, obj: obj});
+      _stack_.push({msg: msg, obj: obj, immediate: immediate});
     } else {
       Log.d("casting", msg);
       // New process in order to avoid duplicate setting properties in React mode
-      setTimeout(() => {
+      if ( immediate ) {
         _fake_broadcast_.trigger(`msg:${msg}`, obj);
-      }, 0);
+      } else {
+        setTimeout(() => {
+          _fake_broadcast_.trigger(`msg:${msg}`, obj);
+        }, 0);
+      }
     }
   },
 
@@ -39,7 +43,7 @@ const Broadcast = Object.create({
     _started_ = true;
     while( _stack_.length > 0 ) {
       const st = _stack_.shift();
-      this.cast(st.msg, st.obj);
+      this.cast(st.msg, st.obj, st.immediate);
     }
   }
 

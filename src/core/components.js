@@ -79,8 +79,8 @@ export default class Components extends Events {
     Broadcast.grab( msg, fn.__ref__ );
   }
 
-  CAST(msg, obj) {
-    Broadcast.cast( msg, obj );
+  CAST(msg, obj, immediate) {
+    Broadcast.cast( msg, obj, immediate );
   }
 
   UNGRAB(msg, fn) {

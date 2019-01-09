@@ -83,7 +83,7 @@ function DestroySingleComponent(element) {
 
 function InitPages() {
 
-  var dependsOn = App.Body[0].dataset.include;
+  let dependsOn = App.Body[0].dataset.include;
   if (dependsOn) {
     dependsOn = dependsOn.split(";");
     Log.log("Required dependencies:", dependsOn);
@@ -91,7 +91,7 @@ function InitPages() {
       dep = App.StringUtils.camelize( dep.trim() );
 
       Log.info("loading dependency:", dep);
-      var page = Pages[dep];
+      let page = Pages[dep];
       if ( page ) {
         new page();
       } else {
@@ -100,8 +100,8 @@ function InitPages() {
     }
   }
 
-  var Page = null;
-  var ctrl = App.Body[0].dataset.controller;
+  let Page = null;
+  let ctrl = App.Body[0].dataset.controller;
 
   if (ctrl) {
     ctrl = App.StringUtils.camelize(ctrl);
