@@ -7,6 +7,8 @@ import StateManager from './react'
 import Broadcast from './broadcast'
 import Events from 'Vendor/@openmind/zero-events'
 import JsonDa from '../utils/json_da'
+import Device from '../utils/device'
+
 
 let Log = new Logger('Zero/Core');
 
@@ -218,5 +220,6 @@ App.start = (state) => {
 
 
 Utils.create( 'JsonDa', JsonDa );
+Utils.create( 'Device', Device );
 
 export {App as Zero, Logger, Utils, Pages, Components}
