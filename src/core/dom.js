@@ -143,7 +143,7 @@ class DOM {
   off(event, callback) {
 
     for( const elm of this ) {
-      Events.off(elm, event, callback, args);
+      Events.off(elm, event, callback);
     }
     return this;
 
