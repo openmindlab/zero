@@ -1,6 +1,6 @@
 {
   "name": "@openmind/zero",
-  "version": "1.0.4",
+  "version": "1.0.4-0",
   "description": "The Openmind Zero framework project",
   "main": "build/zero-core.js",
   "repository": {
@@ -12,6 +12,10 @@
   "keywords": [
     "yeoman-generator"
   ],
+  "peerDependencies": {
+    "yeoman-generator": "3.1.1",
+    "promise-js": "0.0.7"
+  },
   "devDependencies": {
     "babel-plugin-syntax-dynamic-import": "6.18.0",
     "babel-core": "6.26.3",
@@ -42,9 +46,7 @@
     "pug": "^2.0.1"
   },
   "dependencies": {
-    "promise-js": "0.0.7",
-    "@openmind/litelog": "3.1.0",
-    "yeoman-generator": "3.1.1",
+    "@openmind/litelog": "^3.2.0",
     "@openmind/zero-events": "^1.0.0"
   },
   "scripts": {

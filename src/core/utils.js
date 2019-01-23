@@ -6,24 +6,33 @@ let Log = new Logger('Zero/Core/Utils');
 export default {
 
   create(name, util) {
-    if ( ! name ) {
+    let _name = '';
+
+    if ( typeof name === 'string' ) {
+      _name = name || util.NAME;
+    } else if ( typeof name === 'object' ) {
+      util = name;
+      _name = util.NAME;
+    }
+
+    if ( ! _name ) {
       throw "name is required";
     }
 
-    name = App.StringUtils.camelize( name );
+    _name = App.StringUtils.camelize( _name );
 
-    if ( name in this ) {
-      throw `${name} has already been created`
+    if ( _name in this ) {
+      throw `${_name} has already been created`
     }
 
-    Object.defineProperty(this, name, {
+    Object.defineProperty(this, _name, {
       configurable: false,
       get() {
         return util;
       }
     });
 
-    Log.d(`${name} has been created`);
+    Log.d(`${_name} has been created`);
 
     return util;
   },

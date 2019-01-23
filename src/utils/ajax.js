@@ -1,5 +1,9 @@
 export default class Ajax {
 
+  get NAME() {
+    return 'Ajax'
+  }
+
   // DO NOT MODIFY OR EXTENDS THIS PROPERTY: add here all other config keys
   get Defaults() {
     return {
