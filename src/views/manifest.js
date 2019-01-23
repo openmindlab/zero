@@ -1,5 +1,7 @@
-import {Zero, Utils, Components, Pages} from '../core/core.js'
+import {Zero, Utils, Components, Pages, Logger} from '../core/core.js'
 // import $ from 'Vendor/jquery';
+
+Logger.getLogger('Zero/Core').mute = true;
 
 function LoadUtils(Context) {
   Context.keys().forEach(function(util){
