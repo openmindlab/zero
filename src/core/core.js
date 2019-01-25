@@ -220,7 +220,7 @@ App.start = (state) => {
 };
 
 
-Utils.create( 'JsonDa', JsonDa );
-Utils.create( 'Device', Device );
+Utils.create( JsonDa );
+Utils.create( Device );
 
 export {App as Zero, Logger, Utils, Pages, Components, Ajax}

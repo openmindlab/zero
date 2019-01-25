@@ -30,6 +30,8 @@ function isArray( value ){
 
 export default {
 
+  NAME: 'JsonDa',
+
   data(el, key) {
     let itemdata = el[`__data_${key}`];
     if ( !itemdata ) {
@@ -113,7 +115,7 @@ export default {
                 value = undefined;
               }
 
-              if ( typeof value === "string" && value !== "" && value.charAt(0) != "0" ) {
+              if ( typeof value === "string" && (value == '0' || value.charAt(0) != "0") ) {
                 // try to convert into Number
                 let int_value = Number(value);
                 value = isNaN(int_value) ? value : int_value;
