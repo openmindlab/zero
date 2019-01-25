@@ -28,6 +28,7 @@ function onTouchEnd(object, callback, e) {
 
 export default {
 
+  NAME: 'Device',
 
   hasMouse() {
     return _has_mouse;

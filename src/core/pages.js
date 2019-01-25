@@ -62,7 +62,7 @@ export default class Pages extends Events {
   }
 
   constructor() {
-    super();
+    super({});
     Log.d('initializing', this);
     setTimeout( () => {
       App.Events.trigger( Pages.Events.Init, this );
