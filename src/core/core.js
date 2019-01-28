@@ -58,29 +58,31 @@ function InitSingleComponent(element) {
   }
 }
 
-function DestroyComponents(main_element, skip_self) {
+function DestroyComponents(main_element, skip_self, skip_destroy) {
 
   let c_elements = Array.prototype.slice.call(main_element.querySelectorAll("[data-component][data-boilerplate-active]"), 0);
   if ( !skip_self ) {
     c_elements.unshift(main_element);
   }
   for( let element of c_elements ) {
-    DestroySingleComponent(element)
+    DestroySingleComponent(element, skip_destroy)
   }
 }
 
 
-function DestroySingleComponent(element) {
+function DestroySingleComponent(element, skip_destroy) {
+  // default: remove data-attribute (in case of cloneNode)
+  delete element.dataset.boilerplateActive
+
   if ( element.__boilerplate__ === true ) {
     let arr_comps = element['boiler:components'] || [];
     for( let c of arr_comps ) {
-      c.destroy();
+      !skip_destroy && c.destroy();
       delete element[`comp:${c.Name}`];
     }
 
     delete element.__boilerplate__;
     delete element['boiler:components'];
-    delete element.dataset.boilerplateActive;
   }
 }
 
@@ -144,7 +146,7 @@ const WRAP = function() {
         }
         const ret = oldfn.apply(this, args);
         for( const el of elms ){
-          InitSingleComponent(el);
+          InitComponents(el);
         }
         return ret;
       };
@@ -169,6 +171,13 @@ const WRAP = function() {
     }
   }
 
+
+  // const oldClone = HTMLElement.prototype.cloneNode;
+  // HTMLElement.prototype.cloneNode = function(bool) {
+  //   const ret = oldClone.apply( this, arguments );
+  //   DestroyComponents(ret, false, true);
+  //   return ret;
+  // };
 
   const innerHTMLset = HTMLElement.prototype.__lookupSetter__('innerHTML');
   const innerHTMLget = HTMLElement.prototype.__lookupGetter__('innerHTML');

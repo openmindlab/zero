@@ -133,9 +133,14 @@ class DOM {
 
   on(event, callback, ...args) {
     for( const elm of this ) {
-
       Events.on(elm, event, callback, args);
+    }
+    return this;
+  }
 
+  one(event, callback, ...args) {
+    for( const elm of this ) {
+      Events.one(elm, event, callback, args);
     }
     return this;
   }
