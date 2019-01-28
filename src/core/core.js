@@ -124,15 +124,25 @@ function InitPages() {
 
 const WRAP = function() {
 
-  const wrap_fn = [ 'before', 'after', 'append', 'appendChild', 'prepend'];
+  const wrap_fn = [ 'before', 'after', 'append', 'appendChild', 'prepend', 'insertBefore', 'insertAfter'];
   const destroy_fn = ['remove', 'removeChild' ];
 
   for( const fn of wrap_fn ){
     if ( fn in HTMLElement.prototype ) {
       const oldfn = HTMLElement.prototype[ fn ];
       HTMLElement.prototype[ fn ] = function() {
-        const elms = Array.prototype.slice.call(arguments, 0);
-        const ret = oldfn.apply(this, elms);
+        const args = Array.prototype.slice.call(arguments, 0);
+        let elms = [];
+        for( let arg of args ) {
+          if ( arg instanceof DocumentFragment ) {
+            for( let e of arg.childNodes ) {
+              elms.push( e );
+            }
+          } else if ( arg instanceof HTMLElement ) {
+            elms.push( arg );
+          }
+        }
+        const ret = oldfn.apply(this, args);
         for( const el of elms ){
           InitSingleComponent(el);
         }
