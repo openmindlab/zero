@@ -72,7 +72,9 @@ function DestroyComponents(main_element, skip_self, skip_destroy) {
 
 function DestroySingleComponent(element, skip_destroy) {
   // default: remove data-attribute (in case of cloneNode)
-  delete element.dataset.boilerplateActive
+  if ( element.dataset ) {
+    delete element.dataset.boilerplateActive
+  }
 
   if ( element.__boilerplate__ === true ) {
     let arr_comps = element['boiler:components'] || [];
