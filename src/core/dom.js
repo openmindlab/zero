@@ -53,6 +53,20 @@ class DOM {
   }
 
 
+  parent() {
+    return this[0].parentNode;
+  }
+
+  parents() {
+    const ret = [];
+    let el = this[0];
+    while( el && el.parentNode && !(el.parentNode instanceof HTMLBodyElement) ) {
+      ret.push( el = el.parentNode );
+    }
+    return ret;
+  }
+
+
   html(str) {
     if ( typeof str === 'undefined' ) {
       return this[0].innerHTML;
@@ -66,6 +80,18 @@ class DOM {
 
   empty() {
     this.html('');
+  }
+
+  text(str) {
+    if ( typeof str === 'undefined' ) {
+      return this[0].innerText;
+    } else {
+      for( const elm of this ) {
+        const t = document.createTextNode( str );
+        elm.appendChild( t );
+      }
+    }
+    return this;
   }
 
   append( elm ) {
