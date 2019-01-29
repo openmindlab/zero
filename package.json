@@ -1,6 +1,6 @@
 {
   "name": "@openmind/zero",
-  "version": "1.0.7",
+  "version": "1.0.8",
   "description": "The Openmind Zero framework project",
   "main": "build/zero-core.js",
   "repository": {
