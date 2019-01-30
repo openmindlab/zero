@@ -68,6 +68,19 @@ class DOM {
     this.html('');
   }
 
+  text(str) {
+    if ( typeof str === 'undefined' ) {
+      return this[0].innerText;
+    } else {
+      for( const elm of this ) {
+        elm.innerHTML = '';
+        const t = document.createTextNode( str );
+        elm.appendChild( t );
+      }
+    }
+    return this;
+  }
+
   append( elm ) {
     if ( !(elm instanceof DOM) ) {
       elm = [elm];
