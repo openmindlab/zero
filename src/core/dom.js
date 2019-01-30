@@ -87,6 +87,7 @@ class DOM {
       return this[0].innerText;
     } else {
       for( const elm of this ) {
+        elm.innerHTML = '';
         const t = document.createTextNode( str );
         elm.appendChild( t );
       }
