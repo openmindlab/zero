@@ -48,8 +48,8 @@ export default class Pages extends Events {
 
 
   GRAB(msg, fn) {
-    fn.__ref__ = fn.bind(this);
-    Broadcast.grab( msg, fn.__ref__ );
+    fn.__Ref__ = fn.bind(this);
+    Broadcast.grab( msg, fn.__Ref__ );
   }
 
   CAST(msg, obj, immediate) {
@@ -57,7 +57,7 @@ export default class Pages extends Events {
   }
 
   UNGRAB(msg, fn) {
-    fn = fn && fn.__ref__;
+    fn = fn && fn.__Ref__;
     Broadcast.ungrab( msg, fn );
   }
 

@@ -26,12 +26,12 @@ const Broadcast = Object.create({
 
   grab(msg, callback) {
     Log.d("grabbing", msg);
-    const handler = (obj) => {
+    callback.__Ref__ = (obj) => {
       obj = obj || {};
       obj.__msg__ = msg;
       callback( obj )
     };
-    _fake_broadcast_.on(`msg:${msg}`, handler);
+    _fake_broadcast_.on(`msg:${msg}`, callback.__Ref__);
   },
 
   ungrab(msg, callback) {
