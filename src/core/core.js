@@ -30,7 +30,7 @@ function InitComponents(main_element, skip_self) {
   if ( !skip_self ) {
     c_elements.unshift(main_element);
   }
-  for( let element of c_elements ) {
+  for( let i = c_elements.length - 1, element; element = c_elements[ i-- ]; ){
     InitSingleComponent(element);
   }
 }
@@ -64,7 +64,7 @@ function DestroyComponents(main_element, skip_self, skip_destroy) {
   if ( !skip_self ) {
     c_elements.unshift(main_element);
   }
-  for( let element of c_elements ) {
+  for( let i = c_elements.length - 1, element; element = c_elements[ i-- ]; ){
     DestroySingleComponent(element, skip_destroy)
   }
 }

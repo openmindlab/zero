@@ -198,8 +198,8 @@ class DOM {
 
 
   addClass(css) {
+    css = css.split(' ');
     for( const elm of this ) {
-      css = css.split(' ');
       for( const c of css ) {
         c && elm.classList.add(c);
       }
@@ -208,8 +208,8 @@ class DOM {
   }
 
   removeClass(css) {
+    css = css.split(' ');
     for( const elm of this ) {
-      css = css.split(' ');
       for( const c of css ) {
         c && elm.classList.remove(c);
       }
@@ -218,8 +218,8 @@ class DOM {
   }
 
   toggleClass(css) {
+    css = css.split(' ');
     for( const elm of this ) {
-      css = css.split(' ');
       for( const c of css ) {
         c && elm.classList.toggle(c);
       }
