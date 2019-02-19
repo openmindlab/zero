@@ -27,7 +27,7 @@ export default class Pages extends Events {
 
     name = App.StringUtils.camelize( name );
 
-    let proto = component.prototype;
+    let proto = page.prototype;
     while( proto && ! Pages.prototype.isPrototypeOf(proto) ){
       proto = proto.prototype;
     }
