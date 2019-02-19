@@ -47,12 +47,21 @@ export default class Components extends Events {
       throw `${name} has already been created`
     }
 
-    let proto = Object.getPrototypeOf( component );
-    while( proto && (proto !== Components) ) {
-      proto = Object.getPrototypeOf( proto );
+
+    let proto = component.prototype;
+    while( proto && ! Components.prototype.isPrototypeOf(proto) ){
+      proto = proto.prototype;
     }
 
-    if ( !proto ) return false;
+    // let proto = Object.getPrototypeOf( component );
+    // while( proto && (proto !== Components) ) {
+    //   proto = Object.getPrototypeOf( proto );
+    // }
+
+    if ( !proto ) {
+      Log.w("Component", name, "cannot be created");
+      return false;
+    }
 
     Object.defineProperty(Components.__comps__, name, {
       configurable: false,

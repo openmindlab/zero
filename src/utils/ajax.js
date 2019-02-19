@@ -19,12 +19,16 @@ export default class Ajax {
       'headers': {},
       // the default base url for each request
       'baseUrl': null,
-      // the default querystring for each request
-      'querystring': {},
       // the default timeout for each request
       'timeout': 0,
       // the default number of retries
-      'retry': 0
+      'retry': 0,
+      // querystring or body of the request
+      'data': null,
+      // true if body should be sent as json
+      'json': false,
+      // true if body should be sent as text
+      'text': false
     }
   }
 
@@ -84,6 +88,10 @@ export default class Ajax {
   }
 
   abortAll(){
+    throw "This is an interface only - no methods has been implemented"
+  }
+
+  calculateQueryString(data) {
     throw "This is an interface only - no methods has been implemented"
   }
 

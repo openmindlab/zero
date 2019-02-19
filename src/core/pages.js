@@ -27,12 +27,20 @@ export default class Pages extends Events {
 
     name = App.StringUtils.camelize( name );
 
-    let proto = Object.getPrototypeOf( page );
-    while( proto && (proto !== Pages) ) {
-      proto = Object.getPrototypeOf( proto );
+    let proto = component.prototype;
+    while( proto && ! Pages.prototype.isPrototypeOf(proto) ){
+      proto = proto.prototype;
     }
 
-    if ( !proto ) return false;
+    // let proto = Object.getPrototypeOf( page );
+    // while( proto && (proto !== Pages) ) {
+    //   proto = Object.getPrototypeOf( proto );
+    // }
+
+    if ( !proto ) {
+      Log.w("Page", name, "cannot be created");
+      return false;
+    }
 
     Object.defineProperty(Pages, name, {
       configurable: false,
