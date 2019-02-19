@@ -18,12 +18,12 @@ function LoadUtils(Context) {
 function LoadComponents(Context) {
   Context.keys().forEach(function(component){
     let module = Context( component );
-    let proto = Object.getPrototypeOf( module.default );
-    while( proto && (proto !== Components) ) {
-      proto = Object.getPrototypeOf( proto );
-    }
+    // let proto = Object.getPrototypeOf( module.default );
+    // while( proto && (proto !== Components) ) {
+    //   proto = Object.getPrototypeOf( proto );
+    // }
 
-    if ( !proto ) return true;
+    // if ( !proto ) return true;
 
     let match = component.match(/\.\/(.*)\/.*\.js/);
     if ( ! match ) {
@@ -42,12 +42,12 @@ function LoadPages(Context) {
   Context.keys().forEach(function(page){
     let module = Context( page );
 
-    let proto = Object.getPrototypeOf( module.default );
-    while( proto && (proto !== Pages) ) {
-      proto = Object.getPrototypeOf( proto );
-    }
+    // let proto = Object.getPrototypeOf( module.default );
+    // while( proto && (proto !== Pages) ) {
+    //   proto = Object.getPrototypeOf( proto );
+    // }
 
-    if ( !proto ) return true;
+    // if ( !proto ) return true;
 
     let page_name = page.match(/\.\/(.*)\.js/)[1];
     let N = Zero.StringUtils.camelize( page_name );
