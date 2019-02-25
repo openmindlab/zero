@@ -55,7 +55,7 @@ class DOM {
     for( const elm of this ) {
       let sel = elm.querySelectorAll(selector);
       sel = Array.prototype.slice.call(sel, 0);
-      Array.prototype.splice.apply( prev, [prev, prev.length].concat( sel ) );
+      Array.prototype.splice.apply( prev, [prev.length, 0].concat( sel ) );
     }
     return prev;
   }
@@ -131,6 +131,8 @@ class DOM {
       el.parentNode.removeChild( el );
     }
   }
+
+
 
 
   val(str) {
