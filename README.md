@@ -75,6 +75,9 @@ import {Components} from 'Zero';
 
 export default function LazyComponent(name) {
 
+  const names = name.split('/');
+  name = names[0];
+
   class LazyComponent extends Components {
     constructor(element) {
       super(element);
@@ -82,7 +85,7 @@ export default function LazyComponent(name) {
       const self = this;
 
       import(/* webpackChunkName: `[request]` */ `{RELATIVE_PATH_OF_YOUR_DYNAMIC_COMPONENT}/${name.toLowerCase()}`).then( (module) => {
-        const comp = module.default;
+        const comp = module[names[1] || 'default'];
 
         comp.prototype.__defineGetter__('Name', ()  => self.Name);
         const C = new comp( element );
