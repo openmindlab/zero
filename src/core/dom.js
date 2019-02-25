@@ -56,9 +56,8 @@ class DOM {
       let sel = elm.querySelectorAll(selector);
       sel = Array.prototype.slice.call(sel, 0);
       Array.prototype.splice.apply( prev, [prev, prev.length].concat( sel ) );
-      return prev;
     }
-    return ret;
+    return prev;
   }
 
 
