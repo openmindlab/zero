@@ -1,4 +1,4 @@
-import Logger from 'Vendor/@openmind/litelog'
+import Logger from '@openmind/litelog'
 import App from './app'
 
 let Log = new Logger('Zero/Core/Utils');

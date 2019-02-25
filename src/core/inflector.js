@@ -1,4 +1,4 @@
-import Logger from 'Vendor/@openmind/litelog'
+import Logger from '@openmind/litelog'
 
 let Log = new Logger('Zero/Core/Inflector');
 

@@ -1,4 +1,4 @@
-import Logger from 'Vendor/@openmind/litelog'
+import Logger from '@openmind/litelog'
 
 const Log = new Logger('ZeroReact');
 const LogFn = new Logger("ZeroReact/FN");

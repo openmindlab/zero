@@ -32,12 +32,6 @@ module.exports = {
     ]
   },
 
-  resolve: {
-    alias: {
-      Vendor: Path.resolve(__dirname, "node_modules" )
-    }
-  },
-
   plugins: [
     new Webpack.DefinePlugin({
         'process.env': {

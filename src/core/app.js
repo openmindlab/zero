@@ -1,4 +1,4 @@
-import Logger from 'Vendor/@openmind/litelog'
+import Logger from '@openmind/litelog'
 import Inflector from "./inflector"
 import DOM from './dom'
 
@@ -47,5 +47,6 @@ Object.defineProperties(object, {
 
 
 object.Dom = DOM.sel;
+object.Dom.parse = DOM.parseHTML;
 
 export default object;

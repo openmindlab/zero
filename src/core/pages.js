@@ -1,5 +1,5 @@
-import Logger from 'Vendor/@openmind/litelog'
-import Events from 'Vendor/@openmind/zero-events'
+import Logger from '@openmind/litelog'
+import Events from '@openmind/zero-events'
 import Broadcast from './broadcast';
 import App from './app'
 

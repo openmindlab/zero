@@ -1,5 +1,5 @@
-import Logger from 'Vendor/@openmind/litelog'
-import Events from 'Vendor/@openmind/zero-events'
+import Logger from '@openmind/litelog'
+import Events from '@openmind/zero-events'
 let Log = new Logger('Zero/Core/Broadcast');
 
 let _started_ = false;

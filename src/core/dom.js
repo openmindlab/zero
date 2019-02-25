@@ -1,4 +1,4 @@
-import Events from 'Vendor/@openmind/zero-events'
+import Events from '@openmind/zero-events'
 
 class DOM {
 
@@ -16,6 +16,9 @@ class DOM {
     } else if ( (selector instanceof HTMLElement) || selector === window || selector === document ) {
       this.root = selector;
       selection = [ selector ];
+    } else if ( selector ) {
+      // try to translate HTMLCollection/NodeList
+      selection = Array.prototype.slice.call(selector, 0);
     }
 
     for( let i = 0, elm; elm = selection[i]; i++){
@@ -30,6 +33,12 @@ class DOM {
 
   static sel(selector, root) {
     return new DOM(selector, root);
+  }
+
+  static parseHTML(html) {
+    var dp = new DOMParser();
+    const doc = dp.parseFromString(html, 'text/html');
+    return new DOM(doc.body.childNodes);
   }
 
   each(callback) {
@@ -107,6 +116,10 @@ class DOM {
 
 
   appendTo(p) {
+    if ( p instanceof DOM ) {
+      p = p[0];
+    }
+
     for( const el of this ) {
       p.appendChild( el );
     }
