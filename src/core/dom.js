@@ -1,4 +1,5 @@
 import Events from '@openmind/zero-events'
+import JsonDa from '../utils/json_da'
 
 class DOM {
 
@@ -60,6 +61,9 @@ class DOM {
     return prev;
   }
 
+  data(namespace) {
+    return JsonDa.data(this[0], namespace);
+  }
 
   parent() {
     return this[0].parentNode;
@@ -87,7 +91,7 @@ class DOM {
   }
 
   empty() {
-    this.html('');
+    return this.html('');
   }
 
   text(str) {
