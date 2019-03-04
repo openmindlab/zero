@@ -1,5 +1,6 @@
 import Events from '@openmind/zero-events'
 import JsonDa from '../utils/json_da'
+import StringUtils from './inflector'
 
 class DOM {
 
@@ -12,6 +13,11 @@ class DOM {
     if ( selector instanceof DOM ) {
       return selector;
     } else if ( typeof selector === 'string' ) {
+      selector = StringUtils.cleanString( selector );
+      if ( selector.startsWith('<') ) {
+        // parse HTML as new content;
+        return DOM.parseHTML( selector );
+      }
       const elements = root.querySelectorAll(selector);
       selection = Array.prototype.slice.call(elements, 0);
     } else if ( (selector instanceof HTMLElement) || selector === window || selector === document ) {
@@ -42,6 +48,10 @@ class DOM {
     return new DOM(doc.body.childNodes);
   }
 
+  data(namespace) {
+    return JsonDa.data(this[0], namespace);
+  }
+
   each(callback) {
     let ret = [];
     for( const elm of this ) {
@@ -54,6 +64,7 @@ class DOM {
     const ret = new DOM();
     const prev = ret;
     for( const elm of this ) {
+      if ( elm.nodeType === Node.TEXT_NODE ) continue;
       let sel = elm.querySelectorAll(selector);
       sel = Array.prototype.slice.call(sel, 0);
       Array.prototype.splice.apply( prev, [prev.length, 0].concat( sel ) );
@@ -84,6 +95,7 @@ class DOM {
       return this[0].innerHTML;
     } else {
       for( const elm of this ) {
+        if ( elm.nodeType === Node.TEXT_NODE ) continue;
         elm.innerHTML = str;
       }
     }
@@ -99,6 +111,7 @@ class DOM {
       return this[0].innerText;
     } else {
       for( const elm of this ) {
+        if ( elm.nodeType === Node.TEXT_NODE ) continue;
         elm.innerHTML = '';
         const t = document.createTextNode( str );
         elm.appendChild( t );
@@ -152,6 +165,7 @@ class DOM {
 
 
   attr(attr, value) {
+    if ( this[0].nodeType === Node.TEXT_NODE ) return null;
     if ( typeof value === 'undefined' ) {
       const a = this[0].attributes[ attr ]
       return a ? a.value : undefined;
@@ -159,14 +173,24 @@ class DOM {
     return this[0].setAttribute(attr, value);
   }
 
+  removeAttr(attr) {
+    for( const elm of this ) {
+      if ( elm.nodeType === Node.TEXT_NODE ) continue;
+      elm.removeAttribute( attr );
+    }
+    return this;
+  }
+
 
   css(key, value) {
     if ( this.length ) {
       if ( typeof value === 'undefined' ) {
+        if ( this[0].nodeType === Node.TEXT_NODE ) return null;
         const style = window.getComputedStyle( this[0] );
         return style ? style.getPropertyValue( key ) : null;
       } else {
         for( const elm of this ) {
+          if ( elm.nodeType === Node.TEXT_NODE ) continue;
           elm.style.setProperty( key, value );
         }
       }
@@ -218,6 +242,7 @@ class DOM {
   addClass(css) {
     css = css.split(' ');
     for( const elm of this ) {
+      if ( elm.nodeType === Node.TEXT_NODE ) continue;
       for( const c of css ) {
         c && elm.classList.add(c);
       }
@@ -228,6 +253,7 @@ class DOM {
   removeClass(css) {
     css = css.split(' ');
     for( const elm of this ) {
+      if ( elm.nodeType === Node.TEXT_NODE ) continue;
       for( const c of css ) {
         c && elm.classList.remove(c);
       }
@@ -238,6 +264,7 @@ class DOM {
   toggleClass(css) {
     css = css.split(' ');
     for( const elm of this ) {
+      if ( elm.nodeType === Node.TEXT_NODE ) continue;
       for( const c of css ) {
         c && elm.classList.toggle(c);
       }
@@ -246,6 +273,7 @@ class DOM {
   }
 
   hasClass(css) {
+    if ( this[0].nodeType === Node.TEXT_NODE ) return null;
     return this[0].classList.contains( css );
   }
 

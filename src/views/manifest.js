@@ -68,4 +68,8 @@ LoadPages( require.context("../pages", true, /\.js$/) );
 // Components.create('First', LazyComponent('First') );
 
 Zero.start({});
+Zero.Dom(`
+  <p>INJECTED</p>
+  <span>INJECTED 2 LINES</span>
+    ciao`).addClass( 'test-class' ).appendTo(Zero.Body);
 window.Zero = Zero;
