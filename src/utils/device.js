@@ -59,6 +59,33 @@ export default {
   },
 
 
+  getMouseWheelEventName: function(){
+    var prefix = '';
+    var _addEventListener;
+
+    if (window.addEventListener){
+        _addEventListener = "addEventListener";
+    }else{
+        _addEventListener = "attachEvent";
+        prefix = 'on';
+    }
+
+     // detect available wheel event
+    var support = 'onwheel' in document.createElement('div') ? 'wheel' : // Modern browsers support "wheel"
+        document.onmousewheel !== undefined ? 'mousewheel' : // Webkit and IE support at least "mousewheel"
+        'DOMMouseScroll'; // let's assume that remaining browsers are older Firefox
+
+
+    if(support == 'DOMMouseScroll'){
+      return prefix + 'MozMousePixelScroll';
+    }
+    //handle MozMousePixelScroll in older Firefox
+    else{
+      return prefix + support;
+    }
+  },
+
+
   init() {
     function mouseOver() {
       _has_mouse = true;

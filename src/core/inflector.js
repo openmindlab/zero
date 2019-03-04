@@ -9,6 +9,7 @@ export default {
     'fish', 'sheep', 'moose', 'deer', 'news'
   ],
 
+
   pluralRules: [
     [new RegExp('(m)an$', 'gi'), '$1en'],
     [new RegExp('(pe)rson$', 'gi'), '$1ople'],
@@ -88,6 +89,12 @@ export default {
       }
     }
     return str;
+  },
+
+
+  /* Remove spaces and new-lines from string */
+  cleanString: function(str) {
+    return str.replace( /(^\s+|\s+$|\n)/gim, '' );
   },
 
 
