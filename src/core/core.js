@@ -58,6 +58,8 @@ function InitSingleComponent(element) {
 }
 
 function InitComponents(main_element, skip_self) {
+  // skip #text element
+  if ( main_element.nodeType === Node.TEXT_NODE ) return;
   let c_elements = Array.prototype.slice.call(main_element.querySelectorAll("[data-component]"), 0);
   if ( !skip_self ) {
     c_elements.unshift(main_element);
@@ -68,6 +70,8 @@ function InitComponents(main_element, skip_self) {
 }
 
 function DestroyComponents(main_element, skip_self, skip_destroy) {
+  // skip #text element
+  if ( main_element.nodeType === Node.TEXT_NODE ) return;
   let c_elements = Array.prototype.slice.call(
     main_element.querySelectorAll('[data-component][data-boilerplate-active]'),
     0
