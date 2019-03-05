@@ -176,7 +176,7 @@ const WRAP = function wrap() {
         const elms = Array.prototype.slice.call(arguments, 0);
         const ret = oldfn.apply(this, elms);
         if (fn === 'removeChild') {
-          DestroyComponents(el);
+          DestroyComponents(elms[0]);
         } else {
           DestroyComponents(this);
         }
