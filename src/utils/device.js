@@ -1,7 +1,7 @@
 import Logger from '@openmind/litelog'
 import App from '../core/app'
 
-let Log = new Logger("Zero/Core/Utils/Device");
+const Log = new Logger("Zero/Core/Utils/Device");
 
 
 let _has_mouse = false;
@@ -60,15 +60,7 @@ export default {
 
 
   getMouseWheelEventName: function(){
-    var prefix = '';
-    var _addEventListener;
-
-    if (window.addEventListener){
-        _addEventListener = "addEventListener";
-    }else{
-        _addEventListener = "attachEvent";
-        prefix = 'on';
-    }
+    let prefix = '';
 
      // detect available wheel event
     var support = 'onwheel' in document.createElement('div') ? 'wheel' : // Modern browsers support "wheel"
@@ -77,11 +69,10 @@ export default {
 
 
     if(support == 'DOMMouseScroll'){
-      return prefix + 'MozMousePixelScroll';
-    }
-    //handle MozMousePixelScroll in older Firefox
-    else{
-      return prefix + support;
+      //handle MozMousePixelScroll in older Firefox
+      return 'MozMousePixelScroll';
+    } else {
+      return support;
     }
   },
 

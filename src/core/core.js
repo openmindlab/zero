@@ -1,26 +1,25 @@
-import Logger from '@openmind/litelog'
-import App from './app'
-import Utils from './utils'
-import Components from './components'
-import Pages from './pages'
-import StateManager from './react'
-import Broadcast from './broadcast'
-import Events from '@openmind/zero-events'
-import JsonDa from '../utils/json_da'
-import Device from '../utils/device'
-import Ajax from '../utils/ajax'
+import Logger from '@openmind/litelog';
+import Events from '@openmind/zero-events';
+import App from './app';
+import Utils from './utils';
+import Components from './components';
+import Pages from './pages';
+import StateManager from './react';
+import Broadcast from './broadcast';
 
+import JsonDa from '../utils/json_da';
+import Device from '../utils/device';
+import Ajax from '../utils/ajax';
 
-let Log = new Logger('Zero/Core');
+const Log = new Logger('Zero/Core');
 
-
-const _events = new Events({});
+const events = new Events({});
 
 Object.defineProperties(App, {
   Utils: { value: Utils, writable: false },
   Components: { value: Components, writable: false },
   Pages: { value: Pages, writable: false },
-  Events: { value: _events, writable: false },
+  Events: { value: events, writable: false },
   _Broadcast: { value: Broadcast, writable: false }
 });
 
@@ -36,49 +35,60 @@ function InitComponents(main_element, skip_self) {
 }
 
 function InitSingleComponent(element) {
-  if ( element.__boilerplate__ === true ) {
+  if (element.__boilerplate__ === true) {
     return;
   }
   let comp_names = element.dataset ? element.dataset.component : undefined;
-  if ( !comp_names ) {
+  if (!comp_names) {
     return;
   }
   comp_names = comp_names.split(',');
-  for( let comp_name of comp_names ) {
-    comp_name = App.StringUtils.camelize( comp_name.trim() );
-    if ( ! (comp_name && comp_name in Components.__comps__) ) continue;
-    let component = Components.__comps__[ comp_name ];
+  for (let comp_name of comp_names) {
+    comp_name = App.StringUtils.camelize(comp_name.trim());
+    if (!(comp_name && comp_name in Components.__comps__)) continue;
+    let component = Components.__comps__[comp_name];
     element.__boilerplate__ = true;
-    element.dataset.boilerplateActive = "true";
-    let c = new component( element );
+    element.dataset.boilerplateActive = 'true';
+    let c = new component(element);
     element[`comp:${comp_name}`] = c;
     let arr_comps = element['boiler:components'] || [];
-    arr_comps.push( c );
+    arr_comps.push(c);
     element['boiler:components'] = arr_comps;
   }
 }
 
-function DestroyComponents(main_element, skip_self, skip_destroy) {
-
-  let c_elements = Array.prototype.slice.call(main_element.querySelectorAll("[data-component][data-boilerplate-active]"), 0);
+function InitComponents(main_element, skip_self) {
+  let c_elements = Array.prototype.slice.call(main_element.querySelectorAll("[data-component]"), 0);
   if ( !skip_self ) {
     c_elements.unshift(main_element);
   }
-  for( let i = c_elements.length - 1, element; element = c_elements[ i-- ]; ){
-    DestroySingleComponent(element, skip_destroy)
+  for(let i = c_elements.length - 1, element; (element = c_elements[i--]); ) {
+    InitSingleComponent(element);
   }
 }
 
+function DestroyComponents(main_element, skip_self, skip_destroy) {
+  let c_elements = Array.prototype.slice.call(
+    main_element.querySelectorAll('[data-component][data-boilerplate-active]'),
+    0
+  );
+  if (!skip_self) {
+    c_elements.unshift(main_element);
+  }
+  for (let i = c_elements.length - 1, element; (element = c_elements[i--]); ) {
+    DestroySingleComponent(element, skip_destroy);
+  }
+}
 
 function DestroySingleComponent(element, skip_destroy) {
   // default: remove data-attribute (in case of cloneNode)
-  if ( element.dataset ) {
-    delete element.dataset.boilerplateActive
+  if (element.dataset) {
+    delete element.dataset.boilerplateActive;
   }
 
-  if ( element.__boilerplate__ === true ) {
+  if (element.__boilerplate__ === true) {
     let arr_comps = element['boiler:components'] || [];
-    for( let c of arr_comps ) {
+    for (let c of arr_comps) {
       !skip_destroy && c.destroy();
       delete element[`comp:${c.Name}`];
     }
@@ -89,17 +99,16 @@ function DestroySingleComponent(element, skip_destroy) {
 }
 
 function InitPages() {
-
   let dependsOn = App.Body[0].dataset.include;
   if (dependsOn) {
-    dependsOn = dependsOn.split(";");
-    Log.log("Required dependencies:", dependsOn);
+    dependsOn = dependsOn.split(';');
+    Log.log('Required dependencies:', dependsOn);
     for (let dep of dependsOn) {
-      dep = App.StringUtils.camelize( dep.trim() );
+      dep = App.StringUtils.camelize(dep.trim());
 
-      Log.info("loading dependency:", dep);
+      Log.info('loading dependency:', dep);
       let page = Pages[dep];
-      if ( page ) {
+      if (page) {
         new page();
       } else {
         Log.warn("Dependencies '%s' not resolved:", dep);
@@ -113,41 +122,46 @@ function InitPages() {
   if (ctrl) {
     ctrl = App.StringUtils.camelize(ctrl);
 
-    if (Page = Pages[ctrl]) {
-      Log.info("Asking controller to initialize:", ctrl);
+    if ((Page = Pages[ctrl])) {
+      Log.info('Asking controller to initialize:', ctrl);
       new Page();
     } else {
-      Log.warn("No page defined for:", ctrl);
+      Log.warn('No page defined for:', ctrl);
     }
   } else {
-    Log.warn("No controller defined");
+    Log.warn('No controller defined');
   }
-
 }
 
+const WRAP = function wrap() {
+  const wrap_fn = [
+    'before',
+    'after',
+    'append',
+    'appendChild',
+    'prepend',
+    'insertBefore',
+    'insertAfter'
+  ];
+  const destroy_fn = ['remove', 'removeChild'];
 
-const WRAP = function() {
-
-  const wrap_fn = [ 'before', 'after', 'append', 'appendChild', 'prepend', 'insertBefore', 'insertAfter'];
-  const destroy_fn = ['remove', 'removeChild' ];
-
-  for( const fn of wrap_fn ){
-    if ( fn in HTMLElement.prototype ) {
-      const oldfn = HTMLElement.prototype[ fn ];
-      HTMLElement.prototype[ fn ] = function() {
+  for (const fn of wrap_fn) {
+    if (fn in HTMLElement.prototype) {
+      const oldfn = HTMLElement.prototype[fn];
+      HTMLElement.prototype[fn] = function() {
         const args = Array.prototype.slice.call(arguments, 0);
         let elms = [];
-        for( let arg of args ) {
-          if ( arg instanceof DocumentFragment ) {
-            for( let e of arg.childNodes ) {
-              elms.push( e );
+        for (let arg of args) {
+          if (arg instanceof DocumentFragment) {
+            for (let e of arg.childNodes) {
+              elms.push(e);
             }
-          } else if ( arg instanceof HTMLElement ) {
-            elms.push( arg );
+          } else if (arg instanceof HTMLElement) {
+            elms.push(arg);
           }
         }
         const ret = oldfn.apply(this, args);
-        for( const el of elms ){
+        for (const el of elms) {
           InitComponents(el);
         }
         return ret;
@@ -155,24 +169,22 @@ const WRAP = function() {
     }
   }
 
-  for( const fn of destroy_fn ){
-    if ( fn in HTMLElement.prototype ) {
-      const oldfn = HTMLElement.prototype[ fn ];
-      HTMLElement.prototype[ fn ] = function() {
+  for (const fn of destroy_fn) {
+    if (fn in HTMLElement.prototype) {
+      const oldfn = HTMLElement.prototype[fn];
+      HTMLElement.prototype[fn] = function() {
         const elms = Array.prototype.slice.call(arguments, 0);
         const ret = oldfn.apply(this, elms);
-        if ( fn === 'removeChild' ) {
-          for( const el of elms ){
-            DestroySingleComponent(el);
-          }
-        } else {
-          DestroySingleComponent(this);
-        }
+        // if (fn === 'removeChild') {
+        //   DestroySingleComponent(el);
+        // } else {
+        //   DestroySingleComponent(this);
+        // }
+        DestroyComponents(elms[0])
         return ret;
       };
     }
   }
-
 
   // const oldClone = HTMLElement.prototype.cloneNode;
   // HTMLElement.prototype.cloneNode = function(bool) {
@@ -180,6 +192,27 @@ const WRAP = function() {
   //   DestroyComponents(ret, false, true);
   //   return ret;
   // };
+  const oldReplaceWith = Element.prototype.replaceWith;
+  Element.prototype.replaceWith = function() {
+    const elms = Array.prototype.slice.call(arguments, 0);
+    for( const el of elms ) {
+      DestroyComponents(el);
+    }
+    DestroyComponents(this);
+    const ret = oldReplaceWith.apply(this, arguments);
+    for( const el of elms ) {
+      InitComponents(el);
+    }
+    return ret;
+  };
+
+  const oldReplaceChild = Element.prototype.replaceChild;
+  Element.prototype.replaceChild = function(newEl, oldEl) {
+    DestroyComponents(oldEl);
+    const ret = oldReplaceChild.apply(this, arguments);
+    InitComponents(newEl);
+    return ret;
+  };
 
   const innerHTMLset = HTMLElement.prototype.__lookupSetter__('innerHTML');
   const innerHTMLget = HTMLElement.prototype.__lookupGetter__('innerHTML');
@@ -190,58 +223,58 @@ const WRAP = function() {
     return ret;
   });
 
-  HTMLElement.prototype.__defineGetter__('innerHTML', innerHTMLget );
-
-}
+  HTMLElement.prototype.__defineGetter__('innerHTML', innerHTMLget);
+};
 
 WRAP();
 
-
-App.start = (state) => {
-
+App.start = state => {
   const _state = Object.assign({}, state);
 
   const manager = new StateManager(_state);
 
   Object.defineProperties(App, {
-    'Manager': {
+    Manager: {
       configurable: false,
       enumerable: true,
-      get: function(){ return manager }
+      get: function g() {
+        return manager;
+      }
     },
-    '$state': {
+    $state: {
       configurable: false,
       enumerable: true,
-      get: function(){ return manager.state.ref }
+      get: function g() {
+        return manager.state.ref;
+      }
     }
   });
 
   manager.state.bind();
 
   Utils.init();
-  InitComponents( App.Body[0] );
+  InitComponents(App.Body[0]);
   InitPages();
 
-  setTimeout( () => {
-    App.Events.trigger( App.EVENT_READY );
+  setTimeout(() => {
+    App.Events.trigger(App.EVENT_READY);
   }, 0);
 
-  App.Window.on("unload.app", () => {
-    DestroyComponents( App.Body[0] );
-    App.Events.trigger( App.EVENT_END );
+  App.Window.on('unload.app', () => {
+    DestroyComponents(App.Body[0]);
+    App.Events.trigger(App.EVENT_END);
   });
 
   Broadcast.start();
 
   App.start = () => {
-    throw "App has been already started";
+    throw new Error('App has been already started');
   };
 
   return App;
 };
 
+Utils.create(JsonDa);
+Utils.create(Device);
 
-Utils.create( JsonDa );
-Utils.create( Device );
-
-export {App as Zero, Logger, Utils, Pages, Components, Ajax}
+export { App as Zero, Logger, Utils, Pages, Components, Ajax };

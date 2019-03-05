@@ -1,6 +1,6 @@
 import Events from '@openmind/zero-events'
-import JsonDa from '../utils/json_da'
-import StringUtils from './inflector'
+import JsonDa from '../utils/json_da';
+import StringUtils from './inflector';
 
 class DOM {
 
@@ -43,7 +43,7 @@ class DOM {
   }
 
   static parseHTML(html) {
-    var dp = new DOMParser();
+    const dp = new DOMParser();
     const doc = dp.parseFromString(html, 'text/html');
     return new DOM(doc.body.childNodes);
   }
@@ -143,12 +143,25 @@ class DOM {
   }
 
 
+  parent() {
+    return new DOM( this[0].parentNode );
+  }
+
+
+
   remove() {
     for( const el of this ) {
       el.parentNode.removeChild( el );
     }
   }
 
+  replaceWith(newEl) {
+    if ( this.length > 0 ) {
+      const el = this[0].parentNode.replaceChild(newEl, this[0]);
+      return new DOM(el);
+    }
+    return this;
+  }
 
 
 
@@ -165,9 +178,9 @@ class DOM {
 
 
   attr(attr, value) {
-    if ( this[0].nodeType === Node.TEXT_NODE ) return null;
-    if ( typeof value === 'undefined' ) {
-      const a = this[0].attributes[ attr ]
+    if (this[0].nodeType === Node.TEXT_NODE) return null;
+    if (typeof value === 'undefined') {
+      const a = this[0].attributes[attr];
       return a ? a.value : undefined;
     }
     return this[0].setAttribute(attr, value);

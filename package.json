@@ -13,23 +13,25 @@
     "yeoman-generator"
   ],
   "peerDependencies": {
-    "yeoman-generator": "3.1.1",
+    "babel-polyfill": "6.26.0",
     "promise-js": "0.0.7",
-    "babel-polyfill": "6.26.0"
+    "yeoman-generator": "3.1.1"
   },
   "devDependencies": {
-    "babel-plugin-syntax-dynamic-import": "6.18.0",
     "babel-core": "6.26.3",
     "babel-loader": "7.1.5",
+    "babel-plugin-syntax-dynamic-import": "6.18.0",
     "babel-preset-env": "1.7.0",
     "babel-register": "6.26.0",
-    "webpack-stream": "5.2.1",
-    "webpack": "4.27.1",
-    "webpack-cli": "3.1.2",
-    "webpack-merge": "4.1.5",
-    "webpack-dev-server": "3.1.10",
-    "semver": "5.5.0",
     "chai": "4.1.2",
+    "eslint": "^5.14.1",
+    "eslint-config-airbnb": "^17.1.0",
+    "eslint-config-airbnb-base": "^13.1.0",
+    "eslint-config-prettier": "^4.1.0",
+    "eslint-plugin-compat": "^2.7.0",
+    "eslint-plugin-import": "^2.16.0",
+    "eslint-plugin-jsx-a11y": "^6.2.1",
+    "eslint-plugin-prettier": "^3.0.1",
     "express": "^4.16.2",
     "karma": "^2.0.4",
     "karma-chai": "^0.1.0",
@@ -44,7 +46,26 @@
     "karma-spec-reporter": "^0.0.32",
     "mocha": "^5.0.0",
     "phantomjs-prebuilt": "^2.1.7",
-    "pug": "^2.0.1"
+    "prettier": "^1.16.4",
+    "pug": "^2.0.1",
+    "semver": "5.5.0",
+    "webpack": "4.27.1",
+    "webpack-cli": "3.1.2",
+    "webpack-dev-server": "3.1.10",
+    "webpack-merge": "4.1.5",
+    "webpack-stream": "5.2.1"
+  },
+  "eslintConfig": {
+    "extends": "airbnb-base",
+    "env": {
+      "browser": true
+    },
+    "plugins": [
+      "compat"
+    ],
+    "rules": {
+      "compat/compat": "error"
+    }
   },
   "dependencies": {
     "@openmind/litelog": "^3.2.0",
