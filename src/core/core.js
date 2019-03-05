@@ -175,12 +175,11 @@ const WRAP = function wrap() {
       HTMLElement.prototype[fn] = function() {
         const elms = Array.prototype.slice.call(arguments, 0);
         const ret = oldfn.apply(this, elms);
-        // if (fn === 'removeChild') {
-        //   DestroySingleComponent(el);
-        // } else {
-        //   DestroySingleComponent(this);
-        // }
-        DestroyComponents(elms[0])
+        if (fn === 'removeChild') {
+          DestroyComponents(el);
+        } else {
+          DestroyComponents(this);
+        }
         return ret;
       };
     }
