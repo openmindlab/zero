@@ -48,10 +48,6 @@ class DOM {
     return new DOM(doc.body.childNodes);
   }
 
-  data(namespace) {
-    return JsonDa.data(this[0], namespace);
-  }
-
   each(callback) {
     let ret = [];
     for( const elm of this ) {
@@ -74,10 +70,6 @@ class DOM {
 
   data(namespace) {
     return JsonDa.data(this[0], namespace);
-  }
-
-  parent() {
-    return this[0].parentNode;
   }
 
   parents() {
