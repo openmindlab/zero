@@ -115,7 +115,7 @@ export default {
                 value = undefined;
               }
 
-              if ( typeof value === "string" && (value == '0' || (value.startsWith('0.') || value.charAt(0) != "0")) ) {
+              if ( typeof value === "string" && value !== '' && (value == '0' || (value.startsWith('0.') || value.charAt(0) != "0")) ) {
                 // try to convert into Number
                 let int_value = Number(value);
                 value = isNaN(int_value) ? value : int_value;

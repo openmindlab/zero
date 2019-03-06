@@ -114,7 +114,7 @@ export default class Components extends Events {
       if ( msgs.hasOwnProperty(msg) )
         this.GRAB( msg, msgs[ msg ] );
 
-    Log.d('initializing', this);
+    Log.d('initializing', this.Name, this);
     setTimeout( () => {
       App.Events.trigger( Components.Events.Init, this );
     }, 0);
