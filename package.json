@@ -1,7 +1,7 @@
 {
   "name": "@openmind/zero",
   "version": "1.0.18",
-  "description": "The Openmind Zero framework project",
+  "description": "The openmind Zero framework project",
   "main": "build/zero-core.js",
   "repository": {
     "type": "git",
@@ -52,7 +52,8 @@
   },
   "dependencies": {
     "@openmind/litelog": "^3.2.0",
-    "@openmind/zero-events": "^1.0.0"
+    "@openmind/zero-events": "^1.0.0",
+    "lodash": "^4.17.11"
   },
   "scripts": {
     "dev": "webpack-dev-server --config webpack-config.js",

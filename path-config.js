@@ -1,24 +1,23 @@
 const Path = require('path');
 const FS = require('fs');
-const ComponentsDir = "./src/components";
 
-const Components = []
+const ComponentsDir = './src/components';
 
-FS.readdirSync(ComponentsDir).forEach(file => {
-  let foldername = Path.join(ComponentsDir, file);
-  let stats = FS.statSync( foldername );
-  if ( stats.isDirectory() ) {
-    Components.push( file );
+const Components = [];
+
+FS.readdirSync(ComponentsDir).forEach((file) => {
+  const foldername = Path.join(ComponentsDir, file);
+  const stats = FS.statSync(foldername);
+  if (stats.isDirectory()) {
+    Components.push(file);
   }
 });
 
 module.exports = {
-  "src": "src/",
-  "public": "build/",
-  // "sass": "src/components/**/*.scss",
-  // "css": "build/stylesheets/",
-  "js": "src/javascripts/",
-  "data": "src/data/",
-  "ComponentsDir": ComponentsDir,
-  "Components": Components
-}
+  src: 'src/',
+  public: 'build/',
+  js: 'src/javascripts/',
+  data: 'src/data/',
+  ComponentsDir,
+  Components,
+};

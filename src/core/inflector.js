@@ -1,4 +1,12 @@
 import Logger from '@openmind/litelog';
+import trim from 'lodash/trim';
+import snakeCase from 'lodash/snakeCase';
+import camelcase from 'lodash/camelCase';
+import upperFirst from 'lodash/upperFirst';
+import kebabCase from 'lodash/kebabCase';
+import startCase from 'lodash/startCase';
+import capitalize from 'lodash/capitalize';
+import lowerFirst from 'lodash/lowerFirst';
 
 const Log = new Logger('Zero/Core/Inflector');
 
@@ -8,7 +16,6 @@ export default {
     'equipment', 'information', 'rice', 'money', 'species', 'series',
     'fish', 'sheep', 'moose', 'deer', 'news',
   ],
-
 
   pluralRules: [
     [new RegExp('(m)an$', 'gi'), '$1en'],
@@ -70,7 +77,7 @@ export default {
 
   idSuffix: new RegExp('(_ids|_id)$', 'g'),
   underbar: new RegExp('_', 'g'),
-  spaceOrUnderbar: new RegExp('[\ _]', 'g'),
+  spaceOrUnderbar: new RegExp('[ _]', 'g'),
   uppercase: new RegExp('([A-Z])', 'g'),
   underbarPrefix: new RegExp('^_'),
 
@@ -94,7 +101,7 @@ export default {
 
   /* Remove spaces and new-lines from string */
   cleanString(str) {
-    return str.replace(/(^\s+|\s+$|\n)/gim, '');
+    return trim(str);
   },
 
 
@@ -128,142 +135,101 @@ export default {
     );
   },
 
-  /*
-  Inflector.camelize('message_properties')        -> 'MessageProperties'
-  Inflector.camelize('message_properties', true)  -> 'messageProperties'
-  */
-  camelize(str, lowFirstLetter) {
-    // var str = str.toLowerCase();
-    const str_path = str.split('/');
-    for (let i = 0; i < str_path.length; i++) {
-      const str_arr = str_path[i].split('_');
-      const initX = ((lowFirstLetter && i + 1 === str_path.length) ? (1) : (0));
-      for (let x = initX; x < str_arr.length; x++) {
-        str_arr[x] = str_arr[x].charAt(0).toUpperCase() + str_arr[x].substring(1);
-      }
-      str_path[i] = str_arr.join('');
-    }
-    str = str_path.join('::');
-
-    // fix
-    if (lowFirstLetter === true) {
-      const first = str.charAt(0).toLowerCase();
-      const last = str.slice(1);
-      str = first + last;
-    }
-
-    return str;
+  /**
+   * convert the string to snake case
+   * @see https://lodash.com/docs/4.17.10#camelCase
+   * @returns {string}
+   * @example {'Foo Bar' => 'fooBar'}
+   */
+  camelize(str, lowFirstLetter = false) {
+    return lowFirstLetter ? camelcase(str.toLowerCase()) : upperFirst(camelcase(str));
   },
 
-  /*
-  Inflector.underscore('MessageProperties')       -> 'message_properties'
-  Inflector.underscore('messageProperties')       -> 'message_properties'
-  */
+  /**
+   * convert the string to snake case
+   * @see https://lodash.com/docs/4.17.10#snakeCase
+   * @returns {string}
+   * @example {'Foo Bar' => 'foo_bar'}
+   */
   underscore(str) {
-    const str_path = str.split('::');
-    for (let i = 0; i < str_path.length; i++) {
-      str_path[i] = str_path[i].replace(this.uppercase, '_$1');
-      str_path[i] = str_path[i].replace(this.underbarPrefix, '');
-    }
-    str = str_path.join('/').toLowerCase();
-    return str;
+    return snakeCase(str);
   },
 
-  /*
-  Inflector.humanize('message_properties')        -> 'Message properties'
-  Inflector.humanize('message_properties')        -> 'message properties'
-  */
-  humanize(str, lowFirstLetter) {
-    var str = str.toLowerCase();
-    str = str.replace(this.idSuffix, '');
-    str = str.replace(this.underbar, ' ');
-    if (!lowFirstLetter) {
-      str = this.capitalize(str);
+  /**
+   * convert the string to human readable string
+   * @see https://lodash.com/docs/4.17.10#startCase
+   * @param {string} str
+   * @param {boolean} [lowFirstLetter = false] set to true if the first word must be lowercase
+   * @returns {string}
+   * @example {'--foo-bar--' >= 'Foo Bar'}
+   */
+  humanize(str, lowFirstLetter = false) {
+    let originalString = startCase(str);
+    if (lowFirstLetter) {
+      originalString = lowerFirst(originalString);
     }
-    return str;
+    return originalString;
   },
 
-  /*
-  Inflector.capitalize('message_properties')      -> 'Message_properties'
-  Inflector.capitalize('message properties')      -> 'Message properties'
-  */
+  /**
+   * Converts the first character of string to upper case and the remaining to lower case.
+   * @see https://lodash.com/docs/4.17.11#capitalize
+   * @param {string} str
+   * @returns {string}
+   * @example {'--foo-bar--' >= 'Foo Bar'}
+   */
   capitalize(str) {
-    var str = str.toLowerCase();
-    str = str.substring(0, 1).toUpperCase() + str.substring(1);
-    return str;
+    return capitalize(str);
   },
 
-  /*
-  Inflector.dasherize('message_properties')       -> 'message-properties'
-  Inflector.dasherize('message properties')       -> 'message-properties'
-  */
+  /**
+   * convert the string to kebab case
+   * @see https://lodash.com/docs/4.17.10#kebabCase
+   * @return {string}
+   * @example {'Foo Bar' => 'foo-bar'}
+   */
   dasherize(str) {
-    str = str.replace(this.spaceOrUnderbar, '-');
-    return str;
+    return kebabCase(str);
   },
 
-  /*
-  Inflector.camel2words('message_properties')         -> 'Message Properties'
-  Inflector.camel2words('message properties')         -> 'Message Properties'
-  Inflactor.camel2words('Message_propertyId', true)   -> 'Message Properties Id'
-  */
-  camel2words(str, allFirstUpper) {
-    // var str = str.toLowerCase();
-    if (allFirstUpper === true) {
-      str = this.camelize(str);
-      str = this.underscore(str);
-    } else {
-      str = str.toLowerCase();
-    }
-
-    str = str.replace(this.underbar, ' ');
-    const str_arr = str.split(' ');
-    for (let x = 0; x < str_arr.length; x++) {
-      const d = str_arr[x].split('-');
-      for (let i = 0; i < d.length; i++) {
-        if (this.nonTitlecasedWords.indexOf(d[i].toLowerCase()) < 0) {
-          d[i] = this.capitalize(d[i]);
-        }
-      }
-      str_arr[x] = d.join('-');
-    }
-    str = str_arr.join(' ');
-    str = str.substring(0, 1).toUpperCase() + str.substring(1);
-    return str;
-  },
-
-  /*
-  Inflector.demodulize('Message::Bus::Properties')    -> 'Properties'
-  */
+  /**
+   *
+   * @param {string} str
+   * @return {string}
+   * @example Inflector.demodulize('Message::Bus::Properties')    -> 'Properties'
+   */
   demodulize(str) {
-    const str_arr = str.split('::');
-    str = str_arr[str_arr.length - 1];
-    return str;
+    const words = str.split('::');
+    const word = words[words.length - 1];
+    return word;
   },
 
-  /*
-  Inflector.tableize('MessageBusProperty')    -> 'message_bus_properties'
-  */
+  /**
+   *
+   * @param {string} str
+   * @return {string}
+   * @example Inflector.tableize('MessageBusProperty')    -> 'message_bus_properties'
+   */
   tableize(str) {
-    str = this.pluralize(this.underscore(str));
-    return str;
+    return this.pluralize(this.underscore(str));
   },
 
-  /*
-  Inflector.classify('message_bus_properties')    -> 'MessageBusProperty'
-  */
+  /**
+   *
+   * @param {string} str
+   * @returns {string}
+   * @example Inflector.classify('message_bus_properties')    -> 'MessageBusProperty'
+   */
   classify(str) {
-    str = this.singularize(this.camelize(str));
-    return str;
+    return this.singularize(this.camelize(str));
   },
 
   /*
   Inflector.foreignKey('MessageBusProperty')       -> 'message_bus_property_id'
   Inflector.foreignKey('MessageBusProperty', true) -> 'message_bus_propertyid'
   */
-  foreignKey(str, dropIdUbar) {
-    str = `${this.underscore(this.demodulize(str)) + ((dropIdUbar) ? ('') : ('_'))}id`;
-    return str;
+  foreignKey(str, dropIdUbar = false) {
+    return `${this.underscore(this.demodulize(str)) + ((dropIdUbar) ? ('') : ('_'))}id`;
   },
 
   /*

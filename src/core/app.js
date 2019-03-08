@@ -4,8 +4,7 @@ import DOM from './dom';
 
 const Log = new Logger('Zero/Core/App');
 
-let
-  Dom;
+let Dom;
 let Window;
 let Document;
 let Html;
