@@ -1,4 +1,3 @@
-import Logger from '@openmind/litelog';
 import trim from 'lodash/trim';
 import snakeCase from 'lodash/snakeCase';
 import camelcase from 'lodash/camelCase';
@@ -8,7 +7,6 @@ import startCase from 'lodash/startCase';
 import capitalize from 'lodash/capitalize';
 import lowerFirst from 'lodash/lowerFirst';
 
-const Log = new Logger('Zero/Core/Inflector');
 
 export default {
 
@@ -75,42 +73,86 @@ export default {
     'with', 'for',
   ],
 
+  counterRegex: [
+    {
+      match: /11(\s|$)/g,
+      replace: '11th ',
+    },
+    {
+      match: /12(\s|$)/g,
+      replace: '12th ',
+    },
+    {
+      match: /13(\s|$)/g,
+      replace: '13th ',
+    },
+    {
+      match: /1(\s|$)/g,
+      replace: '1st ',
+    },
+    {
+      match: /2(\s|$)/g,
+      replace: '2nd ',
+    },
+    {
+      match: /3(\s|$)/g,
+      replace: '3rd ',
+    },
+    {
+      match: /(\d)(\s|$)/g,
+      replace: '$1th ',
+    },
+  ],
+
   idSuffix: new RegExp('(_ids|_id)$', 'g'),
+
   underbar: new RegExp('_', 'g'),
+
   spaceOrUnderbar: new RegExp('[ _]', 'g'),
+
   uppercase: new RegExp('([A-Z])', 'g'),
+
   underbarPrefix: new RegExp('^_'),
 
   applyRules(str, rules, skip, override) {
+    let textString = str;
     if (override) {
-      str = override;
+      textString = override;
     } else {
       const ignore = (skip.indexOf(str.toLowerCase()) > -1);
       if (!ignore) {
-        for (let x = 0; x < rules.length; x++) {
+        for (let x = 0; x < rules.length; x += 1) {
           if (str.match(rules[x][0])) {
-            str = str.replace(rules[x][0], rules[x][1]);
+            textString = textString.replace(rules[x][0], rules[x][1]);
             break;
           }
         }
       }
     }
-    return str;
+    return textString;
   },
 
 
-  /* Remove spaces and new-lines from string */
+  /**
+   * Clean given string and remove spaces and new-lines from string
+   * @param {string} str
+   * @returns {string}
+   */
   cleanString(str) {
     return trim(str);
   },
 
-
-  /*
-  Inflector.pluralize('person')           -> 'people'
-  Inflector.pluralize('octopus')          -> 'octopi'
-  Inflector.pluralize('Hat')              -> 'Hats'
-  Inflector.pluralize('person', 'guys')   -> 'guys'
-  */
+  /**
+   *
+   * @param {string} str
+   * @param {string} plural
+   * @returns {string}
+   * @example
+   * Inflector.pluralize('person')           -> 'people'
+   * Inflector.pluralize('octopus')          -> 'octopi'
+   * Inflector.pluralize('Hat')              -> 'Hats'
+   * Inflector.pluralize('person', 'guys')   -> 'guys'
+   */
   pluralize(str, plural) {
     return this.applyRules(
       str,
@@ -120,12 +162,16 @@ export default {
     );
   },
 
-  /*
-  Inflector.singularize('person')         -> 'person'
-  Inflector.singularize('octopi')         -> 'octopus'
-  Inflector.singularize('hats')           -> 'hat'
-  Inflector.singularize('guys', 'person') -> 'person'
-  */
+  /**
+   *
+   * @param {string} str
+   * @param {string} singular
+   * @example
+   * Inflector.singularize('person')         -> 'person'
+   * Inflector.singularize('octopi')         -> 'octopus'
+   * Inflector.singularize('hats')           -> 'hat'
+   * Inflector.singularize('guys', 'person') -> 'person'
+   */
   singularize(str, singular) {
     return this.applyRules(
       str,
@@ -236,26 +282,6 @@ export default {
   Inflector.ordinalize('the 1 pitch')     -> 'the 1st pitch'
   */
   ordinalize(str) {
-    const str_arr = str.split(' ');
-    for (let x = 0; x < str_arr.length; x++) {
-      const i = parseInt(str_arr[x]);
-      if (i === NaN) {
-        const ltd = str_arr[x].substring(str_arr[x].length - 2);
-        const ld = str_arr[x].substring(str_arr[x].length - 1);
-        let suf = 'th';
-        if (ltd != '11' && ltd != '12' && ltd != '13') {
-          if (ld === '1') {
-            suf = 'st';
-          } else if (ld === '2') {
-            suf = 'nd';
-          } else if (ld === '3') {
-            suf = 'rd';
-          }
-        }
-        str_arr[x] += suf;
-      }
-    }
-    str = str_arr.join(' ');
-    return str;
+    this.counterRegex.forEach(regex => str.replace(regex.match, regex.replace));
   },
 };
