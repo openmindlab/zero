@@ -1,51 +1,40 @@
-import Logger from '@openmind/litelog';
-import Inflector from '../core/inflector';
-
-const Log = new Logger('Zero/Core/Utils/JsonDA');
 const has = Object.prototype.hasOwnProperty;
 
-const IS_SPECIAL_REGEXP = /^(sel|var|ary):(.*)$/;
-
 function isSpecial(value) {
-  const matches = value.match(IS_SPECIAL_REGEXP);
-  return matches && matches.length > 1;
+  return value.match(/^(sel|var|ary):(.+)$/);
 }
-function isSelector(value) {
-  const matches = value.match(IS_SPECIAL_REGEXP);
-  if (matches[1] === 'sel') { return matches[2]; }
-  return false;
-}
-function isVariable(value) {
-  const matches = value.match(IS_SPECIAL_REGEXP);
-  if (matches[1] === 'var') { return matches[2]; }
-  return false;
-}
-function isArray(value) {
-  const matches = value.match(IS_SPECIAL_REGEXP);
-  if (matches[1] === 'ary') { return matches[2]; }
-  return false;
-}
-
+/**
+ * Returns the HtmlElement data attributes as object
+ * If a key is given it will group each data with keys
+ * @example
+ * <div data-foo-name="foo" data-foo-age="16">Foo</div>
+ */
 const JsonDA = {
 
   NAME: 'JsonDa',
 
+  /**
+   *
+   * @param {HtmlElement} element the HtmlElement
+   * @param {string} key
+   * @returns {object}
+   */
   data(element, key) {
-    let itemdata = element[`__data_${key}`];
-    if (!itemdata) {
-      itemdata = this.nsData(element, key);
-      if (typeof itemdata === 'undefined') {
-        itemdata = {};
-      }
-      element[`__data_${key}`] = itemdata;
+    if (!has.call(element, `__data_${key}`)) {
+      const itemdata = this.nsData(element, key);
+      Object.defineProperty(element, `__data_${key}`, {
+        enumerable: true,
+        value: itemdata,
+      });
     }
-    return itemdata;
+    return element[`__data_${key}`];
   },
 
   /**
    *
    * @param {HTMLElement} element
    * @param {string} namespace
+   * @returns {object}
    */
   nsData(element, namespace = '') {
     if (!(element instanceof HTMLElement)) {
@@ -65,11 +54,21 @@ const JsonDA = {
         json[item] = undefined;
       }
 
+      const specialValues = isSpecial(json[item]);
+      if (specialValues) {
+        switch (specialValues[1]) {
+          case 'sel':
+            json[item] = document.querySelector(specialValues[2]).value;
+            break;
+          case 'var':
+            json[item] = window[specialValues[2]];
+            break;
+          case 'ary':
 
-      if (isSpecial(json[item])) {
-        let selvar;
-        const value = json[item];
-        if (selvar = isSelector(value)) {
+            break;
+          default:
+        }
+        /* if (selvar = isSelector(value)) {
           json[item] = document.querySelector(selvar).value;
         } else if (selvar = isVariable(value)) {
           value = window[selvar];
@@ -81,7 +80,7 @@ const JsonDA = {
             const json_da_child = JsonDA.data(c, originalDataAttribute.join('.'));
             value.push(json_da_child);
           }
-        }
+        } */
       }
 
 
@@ -106,6 +105,7 @@ const JsonDA = {
           delete json[item];
         });
       }
+      return json;
     });
   },
 
