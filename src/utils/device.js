@@ -1,7 +1,7 @@
-import Logger from '@openmind/litelog'
-import App from '../core/app'
+import Logger from '@openmind/litelog';
+import App from '../core/app';
 
-const Log = new Logger("Zero/Core/Utils/Device");
+const Log = new Logger('Zero/Core/Utils/Device');
 
 
 let _has_mouse = false;
@@ -18,8 +18,7 @@ function onTouchMove(object, e) {
 }
 
 function onTouchEnd(object, callback, e) {
-
-  if ( object.start && !object.move ) {
+  if (object.start && !object.move) {
     callback(e);
   }
   object.start = object.move = false;
@@ -36,44 +35,41 @@ export default {
 
 
   onTap(el, callback, namespace) {
-
     namespace = namespace ? `.${namespace}` : '';
 
     const object = {
       start: false,
       move: false,
-      end: false
+      end: false,
     };
 
-    App.Dom(el).on(`touchstart${namespace}`, onTouchStart.bind(el, object) );
-    App.Dom(el).on(`touchmove${namespace}`, onTouchMove.bind(el, object) );
-    App.Dom(el).on(`touchend${namespace}`, onTouchEnd.bind(el, object, callback) );
-
+    App.Dom(el).on(`touchstart${namespace}`, onTouchStart.bind(el, object));
+    App.Dom(el).on(`touchmove${namespace}`, onTouchMove.bind(el, object));
+    App.Dom(el).on(`touchend${namespace}`, onTouchEnd.bind(el, object, callback));
   },
 
   offTap(el, namespace) {
     namespace = namespace ? `.${namespace}` : '';
-    App.Dom(el).off(`touchstart${namespace}`, onTouchStart );
-    App.Dom(el).off(`touchmove${namespace}`, onTouchMove );
-    App.Dom(el).off(`touchend${namespace}`, onTouchEnd );
+    App.Dom(el).off(`touchstart${namespace}`, onTouchStart);
+    App.Dom(el).off(`touchmove${namespace}`, onTouchMove);
+    App.Dom(el).off(`touchend${namespace}`, onTouchEnd);
   },
 
 
-  getMouseWheelEventName: function(){
-    let prefix = '';
+  getMouseWheelEventName() {
+    const prefix = '';
 
-     // detect available wheel event
-    var support = 'onwheel' in document.createElement('div') ? 'wheel' : // Modern browsers support "wheel"
-        document.onmousewheel !== undefined ? 'mousewheel' : // Webkit and IE support at least "mousewheel"
-        'DOMMouseScroll'; // let's assume that remaining browsers are older Firefox
+    // detect available wheel event
+    const support = 'onwheel' in document.createElement('div') ? 'wheel' // Modern browsers support "wheel"
+      : document.onmousewheel !== undefined ? 'mousewheel' // Webkit and IE support at least "mousewheel"
+        : 'DOMMouseScroll'; // let's assume that remaining browsers are older Firefox
 
 
-    if(support == 'DOMMouseScroll'){
-      //handle MozMousePixelScroll in older Firefox
+    if (support == 'DOMMouseScroll') {
+      // handle MozMousePixelScroll in older Firefox
       return 'MozMousePixelScroll';
-    } else {
-      return support;
     }
+    return support;
   },
 
 
@@ -83,6 +79,6 @@ export default {
       App.Dom(window).off('mouseover', mouseOver);
     }
     App.Dom(window).on('mouseover', mouseOver);
-  }
+  },
 
-}
+};

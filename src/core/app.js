@@ -1,38 +1,38 @@
-import Logger from '@openmind/litelog'
-import Inflector from "./inflector"
-import DOM from './dom'
+import Logger from '@openmind/litelog';
+import Inflector from './inflector';
+import DOM from './dom';
 
-let Log = new Logger('Zero/Core/App');
+const Log = new Logger('Zero/Core/App');
 
 let
-  Dom,
-  Window,
-  Document,
-  Html,
-  Head,
-  Body,
-  HtmlBody;
+  Dom;
+let Window;
+let Document;
+let Html;
+let Head;
+let Body;
+let HtmlBody;
 
 const object = {};
 
 Object.defineProperties(object, {
-  EVENT_READY: { value: 'app:ready', writable: false},
-  EVENT_END: { value: 'app:end', writable: false},
+  EVENT_READY: { value: 'app:ready', writable: false },
+  EVENT_END: { value: 'app:end', writable: false },
 
   StringUtils: { value: Inflector, writable: false },
 
-  Window: { get: function() { return Window} },
-  Document: { get: function() { return Document} },
-  Html: { get: function() { return Html} },
-  Head: { get: function() { return Head} },
-  Body: { get: function() { return Body} },
-  HtmlBody: { get: function() { return HtmlBody} },
+  Window: { get() { return Window; } },
+  Document: { get() { return Document; } },
+  Html: { get() { return Html; } },
+  Head: { get() { return Head; } },
+  Body: { get() { return Body; } },
+  HtmlBody: { get() { return HtmlBody; } },
 
-  VERSION: {value: process.env.VERSION},
+  VERSION: { value: process.env.VERSION },
 
   Dom: {
-    get: function() {return Dom;},
-    set: function(s){
+    get() { return Dom; },
+    set(s) {
       Dom = s;
       Window = Dom(window);
       Document = Dom(document);
@@ -40,8 +40,8 @@ Object.defineProperties(object, {
       Head = Dom(document.head);
       Body = Dom(document.body);
       HtmlBody = Dom('html, body');
-    }
-  }
+    },
+  },
 
 });
 

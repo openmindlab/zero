@@ -20,19 +20,9 @@ Object.defineProperties(App, {
   Components: { value: Components, writable: false },
   Pages: { value: Pages, writable: false },
   Events: { value: events, writable: false },
-  _Broadcast: { value: Broadcast, writable: false }
+  _Broadcast: { value: Broadcast, writable: false },
 });
 
-
-function InitComponents(main_element, skip_self) {
-  let c_elements = Array.prototype.slice.call(main_element.querySelectorAll("[data-component]"), 0);
-  if ( !skip_self ) {
-    c_elements.unshift(main_element);
-  }
-  for( let i = c_elements.length - 1, element; element = c_elements[ i-- ]; ){
-    InitSingleComponent(element);
-  }
-}
 
 function InitSingleComponent(element) {
   if (element.__boilerplate__ === true) {
@@ -46,12 +36,12 @@ function InitSingleComponent(element) {
   for (let comp_name of comp_names) {
     comp_name = App.StringUtils.camelize(comp_name.trim());
     if (!(comp_name && comp_name in Components.__comps__)) continue;
-    let component = Components.__comps__[comp_name];
+    const component = Components.__comps__[comp_name];
     element.__boilerplate__ = true;
     element.dataset.boilerplateActive = 'true';
-    let c = new component(element);
+    const c = new component(element);
     element[`comp:${comp_name}`] = c;
-    let arr_comps = element['boiler:components'] || [];
+    const arr_comps = element['boiler:components'] || [];
     arr_comps.push(c);
     element['boiler:components'] = arr_comps;
   }
@@ -59,27 +49,27 @@ function InitSingleComponent(element) {
 
 function InitComponents(main_element, skip_self) {
   // skip #text element
-  if ( main_element.nodeType === Node.TEXT_NODE ) return;
-  let c_elements = Array.prototype.slice.call(main_element.querySelectorAll("[data-component]"), 0);
-  if ( !skip_self ) {
+  if (main_element.nodeType === Node.TEXT_NODE) return;
+  const c_elements = Array.prototype.slice.call(main_element.querySelectorAll('[data-component]'), 0);
+  if (!skip_self) {
     c_elements.unshift(main_element);
   }
-  for(let i = c_elements.length - 1, element; (element = c_elements[i--]); ) {
+  for (let i = c_elements.length - 1, element; (element = c_elements[i--]);) {
     InitSingleComponent(element);
   }
 }
 
 function DestroyComponents(main_element, skip_self, skip_destroy) {
   // skip #text element
-  if ( main_element.nodeType === Node.TEXT_NODE ) return;
-  let c_elements = Array.prototype.slice.call(
+  if (main_element.nodeType === Node.TEXT_NODE) return;
+  const c_elements = Array.prototype.slice.call(
     main_element.querySelectorAll('[data-component][data-boilerplate-active]'),
-    0
+    0,
   );
   if (!skip_self) {
     c_elements.unshift(main_element);
   }
-  for (let i = c_elements.length - 1, element; (element = c_elements[i--]); ) {
+  for (let i = c_elements.length - 1, element; (element = c_elements[i--]);) {
     DestroySingleComponent(element, skip_destroy);
   }
 }
@@ -91,8 +81,8 @@ function DestroySingleComponent(element, skip_destroy) {
   }
 
   if (element.__boilerplate__ === true) {
-    let arr_comps = element['boiler:components'] || [];
-    for (let c of arr_comps) {
+    const arr_comps = element['boiler:components'] || [];
+    for (const c of arr_comps) {
       !skip_destroy && c.destroy();
       delete element[`comp:${c.Name}`];
     }
@@ -111,7 +101,7 @@ function InitPages() {
       dep = App.StringUtils.camelize(dep.trim());
 
       Log.info('loading dependency:', dep);
-      let page = Pages[dep];
+      const page = Pages[dep];
       if (page) {
         new page();
       } else {
@@ -145,19 +135,19 @@ const WRAP = function wrap() {
     'appendChild',
     'prepend',
     'insertBefore',
-    'insertAfter'
+    'insertAfter',
   ];
   const destroy_fn = ['remove', 'removeChild'];
 
   for (const fn of wrap_fn) {
     if (fn in HTMLElement.prototype) {
       const oldfn = HTMLElement.prototype[fn];
-      HTMLElement.prototype[fn] = function() {
+      HTMLElement.prototype[fn] = function () {
         const args = Array.prototype.slice.call(arguments, 0);
-        let elms = [];
-        for (let arg of args) {
+        const elms = [];
+        for (const arg of args) {
           if (arg instanceof DocumentFragment) {
-            for (let e of arg.childNodes) {
+            for (const e of arg.childNodes) {
               elms.push(e);
             }
           } else if (arg instanceof HTMLElement) {
@@ -176,7 +166,7 @@ const WRAP = function wrap() {
   for (const fn of destroy_fn) {
     if (fn in HTMLElement.prototype) {
       const oldfn = HTMLElement.prototype[fn];
-      HTMLElement.prototype[fn] = function() {
+      HTMLElement.prototype[fn] = function () {
         const elms = Array.prototype.slice.call(arguments, 0);
         const ret = oldfn.apply(this, elms);
         if (fn === 'removeChild') {
@@ -196,21 +186,21 @@ const WRAP = function wrap() {
   //   return ret;
   // };
   const oldReplaceWith = Element.prototype.replaceWith;
-  Element.prototype.replaceWith = function() {
+  Element.prototype.replaceWith = function () {
     const elms = Array.prototype.slice.call(arguments, 0);
-    for( const el of elms ) {
+    for (const el of elms) {
       DestroyComponents(el);
     }
     DestroyComponents(this);
     const ret = oldReplaceWith.apply(this, arguments);
-    for( const el of elms ) {
+    for (const el of elms) {
       InitComponents(el);
     }
     return ret;
   };
 
   const oldReplaceChild = Element.prototype.replaceChild;
-  Element.prototype.replaceChild = function(newEl, oldEl) {
+  Element.prototype.replaceChild = function (newEl, oldEl) {
     DestroyComponents(oldEl);
     const ret = oldReplaceChild.apply(this, arguments);
     InitComponents(newEl);
@@ -219,9 +209,9 @@ const WRAP = function wrap() {
 
   const innerHTMLset = HTMLElement.prototype.__lookupSetter__('innerHTML');
   const innerHTMLget = HTMLElement.prototype.__lookupGetter__('innerHTML');
-  HTMLElement.prototype.__defineSetter__('innerHTML', function(value) {
+  HTMLElement.prototype.__defineSetter__('innerHTML', function (value) {
     DestroyComponents(this, true);
-    let ret = innerHTMLset.call(this, value);
+    const ret = innerHTMLset.call(this, value);
     InitComponents(this, true);
     return ret;
   });
@@ -231,7 +221,7 @@ const WRAP = function wrap() {
 
 WRAP();
 
-App.start = state => {
+App.start = (state) => {
   const _state = Object.assign({}, state);
 
   const manager = new StateManager(_state);
@@ -242,15 +232,15 @@ App.start = state => {
       enumerable: true,
       get: function g() {
         return manager;
-      }
+      },
     },
     $state: {
       configurable: false,
       enumerable: true,
       get: function g() {
         return manager.state.ref;
-      }
-    }
+      },
+    },
   });
 
   manager.state.bind();
@@ -280,4 +270,6 @@ App.start = state => {
 Utils.create(JsonDa);
 Utils.create(Device);
 
-export { App as Zero, Logger, Utils, Pages, Components, Ajax };
+export {
+  App as Zero, Logger, Utils, Pages, Components, Ajax,
+};

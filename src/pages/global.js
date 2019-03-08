@@ -1,29 +1,26 @@
-import {Zero, Logger, Pages, Components} from '../core/core.js'
+import {
+  Zero, Logger, Pages, Components,
+} from '../core/core';
 
-const Log = new Logger("Pages/Global");
+const Log = new Logger('Pages/Global');
 
 
 export default class Global extends Pages {
-
-
   constructor() {
     super();
 
     this.on('test:event', () => {
-      Log.i("on EVENT Page itself");
+      Log.i('on EVENT Page itself');
     });
 
-    setTimeout( () => {
+    setTimeout(() => {
       this.trigger('test:event');
-    }, 1000)
+    }, 1000);
 
-    Zero.Events.on( Components.Events.Init, (comp) => {
+    Zero.Events.on(Components.Events.Init, (comp) => {
       comp.on('test:component', () => {
-        Log.i("on EVENT COMPONENT");
-      })
-    } );
-
+        Log.i('on EVENT COMPONENT');
+      });
+    });
   }
-
-
 }

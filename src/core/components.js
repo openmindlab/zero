@@ -1,21 +1,20 @@
-import Logger from '@openmind/litelog'
-import Events from '@openmind/zero-events'
+import Logger from '@openmind/litelog';
+import Events from '@openmind/zero-events';
 import Broadcast from './broadcast';
-import App from './app'
-import JsonDa from '../utils/json_da'
+import App from './app';
+import JsonDa from '../utils/json_da';
 
-let Log = new Logger('Zero/Core/Components');
+const Log = new Logger('Zero/Core/Components');
 
-let $comps = {};
+const $comps = {};
 
 export default class Components extends Events {
-
   static get Events() {
     return {
-      Init: "component:init",
-      Added: "component:added",
-      Removed: "component:removed",
-      Destroy: "component:destroy"
+      Init: 'component:init',
+      Added: 'component:added',
+      Removed: 'component:removed',
+      Destroy: 'component:destroy',
     };
   }
 
@@ -32,24 +31,23 @@ export default class Components extends Events {
   }
 
   get data() {
-    return JsonDa.data( this.element[0], this.Name.toLowerCase() ) || {};
+    return JsonDa.data(this.element[0], this.Name.toLowerCase()) || {};
   }
 
   static create(name, component) {
-
-    if ( ! name ) {
-      throw "name is required";
+    if (!name) {
+      throw 'name is required';
     }
 
-    name = App.StringUtils.camelize( name );
+    name = App.StringUtils.camelize(name);
 
-    if ( name in Components.__comps__ ) {
-      throw `${name} has already been created`
+    if (name in Components.__comps__) {
+      throw `${name} has already been created`;
     }
 
 
     let proto = component.prototype;
-    while( proto && ! Components.prototype.isPrototypeOf(proto) ){
+    while (proto && !Components.prototype.isPrototypeOf(proto)) {
       proto = proto.prototype;
     }
 
@@ -58,8 +56,8 @@ export default class Components extends Events {
     //   proto = Object.getPrototypeOf( proto );
     // }
 
-    if ( !proto ) {
-      Log.w("Component", name, "cannot be created");
+    if (!proto) {
+      Log.w('Component', name, 'cannot be created');
       return false;
     }
 
@@ -67,14 +65,14 @@ export default class Components extends Events {
       configurable: false,
       get() {
         return component;
-      }
+      },
     });
 
-    Object.defineProperty(component.prototype, "Name", {
+    Object.defineProperty(component.prototype, 'Name', {
       configurable: false,
       get() {
         return name;
-      }
+      },
     });
 
     Log.d(`${name} has been created`);
@@ -85,16 +83,16 @@ export default class Components extends Events {
 
   GRAB(msg, fn) {
     fn.__Ref__ = fn.bind(this);
-    Broadcast.grab( msg, fn.__Ref__ );
+    Broadcast.grab(msg, fn.__Ref__);
   }
 
   CAST(msg, obj, immediate) {
-    Broadcast.cast( msg, obj, immediate );
+    Broadcast.cast(msg, obj, immediate);
   }
 
   UNGRAB(msg, fn) {
     fn = fn && fn.__Ref__;
-    Broadcast.ungrab( msg, fn );
+    Broadcast.ungrab(msg, fn);
   }
 
 
@@ -105,32 +103,30 @@ export default class Components extends Events {
 
     const msgs = this.Messages;
 
-    const react = this.react;
+    const { react } = this;
     const new_react = App.Manager.wrap(this, react);
     delete this.react;
     this.__defineGetter__('react', () => new_react);
 
-    for ( const msg in msgs )
-      if ( msgs.hasOwnProperty(msg) )
-        this.GRAB( msg, msgs[ msg ] );
+    for (const msg in msgs) {
+      if (msgs.hasOwnProperty(msg)) { this.GRAB(msg, msgs[msg]); }
+    }
 
     Log.d('initializing', this.Name, this);
-    setTimeout( () => {
-      App.Events.trigger( Components.Events.Init, this );
+    setTimeout(() => {
+      App.Events.trigger(Components.Events.Init, this);
     }, 0);
   }
 
   destroy() {
-
     App.Manager.unwrap(this, this.react);
 
-    for ( const msg in this.Messages )
-      if ( this.Messages.hasOwnProperty(msg) )
-        this.UNGRAB( msg, this.Messages[ msg ] );
+    for (const msg in this.Messages) {
+      if (this.Messages.hasOwnProperty(msg)) { this.UNGRAB(msg, this.Messages[msg]); }
+    }
 
-    Log.d('destroyed', this, "on", this.$element);
+    Log.d('destroyed', this, 'on', this.$element);
 
-    App.Events.trigger( Components.Events.Destroy, this );
+    App.Events.trigger(Components.Events.Destroy, this);
   }
-
 }
