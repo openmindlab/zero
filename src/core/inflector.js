@@ -143,7 +143,7 @@ export default {
   },
 
   /**
-   *
+   * Returns the plural string for given singular
    * @param {string} str
    * @param {string} plural
    * @returns {string}
@@ -163,7 +163,7 @@ export default {
   },
 
   /**
-   *
+   * Returns the singular string for given plural
    * @param {string} str
    * @param {string} singular
    * @example
@@ -182,32 +182,35 @@ export default {
   },
 
   /**
-   * convert the string to snake case
+   * Returns the string in camel case
    * @see https://lodash.com/docs/4.17.10#camelCase
    * @returns {string}
-   * @example {'Foo Bar' => 'fooBar'}
+   * @example
+   * {'Foo Bar' => 'fooBar'}
    */
   camelize(str, lowFirstLetter = false) {
     return lowFirstLetter ? camelcase(str.toLowerCase()) : upperFirst(camelcase(str));
   },
 
   /**
-   * convert the string to snake case
+   * Returns the string in snake case
    * @see https://lodash.com/docs/4.17.10#snakeCase
    * @returns {string}
-   * @example {'Foo Bar' => 'foo_bar'}
+   * @example
+   * {'Foo Bar' => 'foo_bar'}
    */
   underscore(str) {
     return snakeCase(str);
   },
 
   /**
-   * convert the string to human readable string
+   * Returns the human readable string
    * @see https://lodash.com/docs/4.17.10#startCase
    * @param {string} str
    * @param {boolean} [lowFirstLetter = false] set to true if the first word must be lowercase
    * @returns {string}
-   * @example {'--foo-bar--' >= 'Foo Bar'}
+   * @example
+   * {'--foo-bar--' >= 'Foo Bar'}
    */
   humanize(str, lowFirstLetter = false) {
     let originalString = startCase(str);
@@ -218,31 +221,34 @@ export default {
   },
 
   /**
-   * Converts the first character of string to upper case and the remaining to lower case.
+   * Returns the string with ONLY the first character to upper case and the remaining to lower case.
    * @see https://lodash.com/docs/4.17.11#capitalize
    * @param {string} str
    * @returns {string}
-   * @example {'--foo-bar--' >= 'Foo Bar'}
+   * @example
+   * {'foo BAR' >= 'Foo bar'}
    */
   capitalize(str) {
     return capitalize(str);
   },
 
   /**
-   * convert the string to kebab case
+   * Returns the string in kebab case
    * @see https://lodash.com/docs/4.17.10#kebabCase
    * @return {string}
-   * @example {'Foo Bar' => 'foo-bar'}
+   * @example
+   * {'Foo Bar' => 'foo-bar'}
    */
   dasherize(str) {
     return kebabCase(str);
   },
 
   /**
-   *
+   * ?
    * @param {string} str
    * @return {string}
-   * @example Inflector.demodulize('Message::Bus::Properties')    -> 'Properties'
+   * @example
+   * Inflector.demodulize('Message::Bus::Properties')    -> 'Properties'
    */
   demodulize(str) {
     const words = str.split('::');
@@ -251,37 +257,52 @@ export default {
   },
 
   /**
-   *
+   * ?
    * @param {string} str
    * @return {string}
-   * @example Inflector.tableize('MessageBusProperty')    -> 'message_bus_properties'
+   * @example
+   * Inflector.tableize('MessageBusProperty')    -> 'message_bus_properties'
    */
   tableize(str) {
     return this.pluralize(this.underscore(str));
   },
 
   /**
-   *
+   * ?
    * @param {string} str
    * @returns {string}
-   * @example Inflector.classify('message_bus_properties')    -> 'MessageBusProperty'
+   * @example
+   * Inflector.classify('message_bus_properties')    -> 'MessageBusProperty'
    */
   classify(str) {
     return this.singularize(this.camelize(str));
   },
 
-  /*
-  Inflector.foreignKey('MessageBusProperty')       -> 'message_bus_property_id'
-  Inflector.foreignKey('MessageBusProperty', true) -> 'message_bus_propertyid'
-  */
+  /**
+   * ?
+   * @param {string} str
+   * @param {boolean} [dropIdUbar = false]
+   * @returns {string}
+   * @example
+   * Inflector.foreignKey('MessageBusProperty')       -> 'message_bus_property_id'
+   * Inflector.foreignKey('MessageBusProperty', true) -> 'message_bus_propertyid'
+   */
   foreignKey(str, dropIdUbar = false) {
     return `${this.underscore(this.demodulize(str)) + ((dropIdUbar) ? ('') : ('_'))}id`;
   },
 
-  /*
-  Inflector.ordinalize('the 1 pitch')     -> 'the 1st pitch'
-  */
+  /**
+   *
+   * @param {string} str
+   * @returns {string}
+   * @example
+   * Inflector.ordinalize('the 1 pitch')     -> 'the 1st pitch'
+   */
   ordinalize(str) {
-    this.counterRegex.forEach(regex => str.replace(regex.match, regex.replace));
+    let originalString = str;
+    this.counterRegex.forEach((regex) => {
+      originalString = originalString.replace(regex.match, regex.replace);
+    });
+    return originalString;
   },
 };
