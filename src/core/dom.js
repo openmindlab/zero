@@ -1,6 +1,6 @@
 import Events from '@openmind/zero-events';
 import JsonDa from '../utils/json_da';
-import StringUtils from './inflector';
+import Inflector from './inflector';
 
 class DOM {
   constructor(selector, root = document) {
@@ -11,7 +11,7 @@ class DOM {
     if (selector instanceof DOM) {
       return selector;
     } if (typeof selector === 'string') {
-      selector = StringUtils.cleanString(selector);
+      selector = Inflector.cleanString(selector);
       if (selector.startsWith('<')) {
         // parse HTML as new content;
         return DOM.parseHTML(selector);
@@ -79,7 +79,6 @@ class DOM {
     return ret;
   }
 
-
   html(str) {
     if (typeof str === 'undefined') {
       return this[0].innerHTML;
@@ -120,7 +119,6 @@ class DOM {
     return this;
   }
 
-
   appendTo(p) {
     if (p instanceof DOM) {
       p = p[0];
@@ -132,11 +130,9 @@ class DOM {
     return this;
   }
 
-
   parent() {
     return new DOM(this[0].parentNode);
   }
-
 
   remove() {
     for (const el of this) {
@@ -152,7 +148,6 @@ class DOM {
     return this;
   }
 
-
   val(str) {
     if (typeof str === 'undefined') {
       return this[0].value;
@@ -163,7 +158,6 @@ class DOM {
 
     return this;
   }
-
 
   attr(attr, value) {
     if (this[0].nodeType === Node.TEXT_NODE) return null;
@@ -182,7 +176,6 @@ class DOM {
     return this;
   }
 
-
   css(key, value) {
     if (this.length) {
       if (typeof value === 'undefined') {
@@ -199,7 +192,6 @@ class DOM {
     }
     return null;
   }
-
 
   on(event, callback, ...args) {
     for (const elm of this) {
@@ -229,14 +221,12 @@ class DOM {
     return this;
   }
 
-
   triggerHandler(evt, ...args) {
     for (const elm of this) {
       Events.trigger(elm, evt, args);
     }
     return this;
   }
-
 
   addClass(css) {
     css = css.split(' ');

@@ -1,50 +1,39 @@
 import Logger from '@openmind/litelog';
-import App from './app';
+import Inflector from './inflector';
 
 const Log = new Logger('Zero/Core/Utils');
+const has = Object.prototype.hasOwnProperty;
 
-export default {
-
+const Util = {
+  collection: new Map(),
   create(name, util) {
-    let _name = '';
-
+    let utilityName = '';
     if (typeof name === 'string') {
-      _name = name || util.NAME;
-    } else if (typeof name === 'object') {
-      util = name;
-      _name = util.NAME;
+      utilityName = name;
+    } else if (typeof name === 'object' && has.call(util.NAME)) {
+      utilityName = util.NAME;
     }
 
-    if (!_name) {
-      throw 'name is required';
+    if (!utilityName) {
+      throw new Error('name is required');
     }
 
-    _name = App.StringUtils.camelize(_name);
+    utilityName = Inflector.camelize(utilityName);
 
-    if (_name in this) {
-      throw `${_name} has already been created`;
+    if (this.collection.has(utilityName)) {
+      throw new Error(`${utilityName} has already been created`);
     }
-
-    Object.defineProperty(this, _name, {
-      configurable: false,
-      get() {
-        return util;
-      },
-    });
-
-    Log.d(`${_name} has been created`);
-
-    return util;
+    this.collection.set(utilityName, util);
+    Log.d(`${utilityName} has been created`);
+    return this.collection;
   },
 
   init() {
-    const keys = Object.getOwnPropertyNames(this);
-    for (const name of keys) {
-      const util = this[name];
-      if (util.init) {
-        util.init();
-      }
-    }
+    this.collection.forEach((item) => {
+      item.init();
+    });
   },
 
 };
+
+export default Util;

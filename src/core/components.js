@@ -36,13 +36,13 @@ export default class Components extends Events {
 
   static create(name, component) {
     if (!name) {
-      throw 'name is required';
+      throw new Error('name is required');
     }
 
     name = App.StringUtils.camelize(name);
 
     if (name in Components.__comps__) {
-      throw `${name} has already been created`;
+      throw new Error(`${name} has already been created`);
     }
 
 
@@ -50,11 +50,6 @@ export default class Components extends Events {
     while (proto && !Components.prototype.isPrototypeOf(proto)) {
       proto = proto.prototype;
     }
-
-    // let proto = Object.getPrototypeOf( component );
-    // while( proto && (proto !== Components) ) {
-    //   proto = Object.getPrototypeOf( proto );
-    // }
 
     if (!proto) {
       Log.w('Component', name, 'cannot be created');

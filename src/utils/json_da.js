@@ -1,8 +1,8 @@
 import Logger from '@openmind/litelog';
-
+import Inflector from '../core/inflector';
 
 const Log = new Logger('Zero/Core/Utils/JsonDA');
-
+const has = Object.prototype.hasOwnProperty;
 
 const IS_SPECIAL_REGEXP = /^(sel|var|ary):(.*)$/;
 
@@ -13,131 +13,102 @@ function isSpecial(value) {
 function isSelector(value) {
   const matches = value.match(IS_SPECIAL_REGEXP);
   if (matches[1] === 'sel') { return matches[2]; }
+  return false;
 }
 function isVariable(value) {
   const matches = value.match(IS_SPECIAL_REGEXP);
   if (matches[1] === 'var') { return matches[2]; }
+  return false;
 }
 function isArray(value) {
   const matches = value.match(IS_SPECIAL_REGEXP);
   if (matches[1] === 'ary') { return matches[2]; }
+  return false;
 }
 
-
-export default {
+const JsonDA = {
 
   NAME: 'JsonDa',
 
-  data(el, key) {
-    let itemdata = el[`__data_${key}`];
+  data(element, key) {
+    let itemdata = element[`__data_${key}`];
     if (!itemdata) {
-      itemdata = this.nsData(el, key);
+      itemdata = this.nsData(element, key);
       if (typeof itemdata === 'undefined') {
         itemdata = {};
       }
-      el[`__data_${key}`] = itemdata;
+      element[`__data_${key}`] = itemdata;
     }
     return itemdata;
   },
 
-
-  nsData(el, namespace) {
-    const json = {};
-
-    if (!el || !el.attributes) {
-      Log.error("'el' is not a valid HTML element");
-      return json;
+  /**
+   *
+   * @param {HTMLElement} element
+   * @param {string} namespace
+   */
+  nsData(element, namespace = '') {
+    if (!(element instanceof HTMLElement)) {
+      throw new Error(`${element} is not a valid HtmlElement`);
     }
 
+    const json = Object.assign({}, element.dataset);
 
-    for (const attr of el.attributes) {
-      const
-        attr_name = attr.name;
-      let { value } = attr;
-      if (attr_name.indexOf('data-') == 0) {
-        // found a data- attribute
-        const
-          names = attr_name.split('-').slice(1);
-        let obj = json;
-        let name;
-        const original_data_attribute = [];
+    Object.keys(json).forEach((item) => {
+      if (json[item] === 'true') {
+        json[item] = true;
+      } else if (json[item] === 'false') {
+        json[item] = false;
+      } else if (json[item] === 'null') {
+        json[item] = null;
+      } else if (json[item] === 'undefined') {
+        json[item] = undefined;
+      }
 
 
-        while (name = names.shift()) {
-          // trasformation in camelCase
-          const nn = name.split(/(?=_)_/);
-          for (let z = 1, _nn; _nn = nn[z++];) {
-            if (!_nn) {
-              nn[z] = '_';
-            } else {
-              _nn = _nn.substring(0, 1).toUpperCase() + _nn.substring(1);
-              nn[z - 1] = _nn;
-            }
-          }
-          name = nn.join('');
-
-          original_data_attribute.push(name);
-
-          if (!names.length) {
-            // last element, we have to calculate its value
-            obj[name] = (function () {
-              // check special attribute
-              let selvar;
-              if (isSpecial(value)) {
-                if (selvar = isSelector(value)) {
-                  value = document.querySelector(selvar).value;
-                } else if (selvar = isVariable(value)) {
-                  value = window[selvar];
-                } else if (selvar = isArray(value)) {
-                  // collect array from DOM following the `original_data_attribute` as rootscope
-                  const children = el.querySelectorAll(selvar);
-                  value = [];
-                  for (let i_c = 0, c; c = children[i_c++];) {
-                    const json_da_child = JsonDA.data(c, original_data_attribute.join('.'));
-                    value.push(json_da_child);
-                  }
-                }
-              }
-
-              if (value == 'true') {
-                value = true;
-              } else if (value == 'false') {
-                value = false;
-              } else if (value == 'null') {
-                value = null;
-              } else if (value == 'undefined') {
-                value = undefined;
-              }
-
-              if (typeof value === 'string' && value !== '' && (value == '0' || (value.startsWith('0.') || value.charAt(0) != '0'))) {
-                // try to convert into Number
-                const int_value = Number(value);
-                value = isNaN(int_value) ? value : int_value;
-              }
-
-              return typeof obj[name] !== 'object' ? value : obj[name];
-            }());
-          } else {
-            // create a temporary object to store data
-            obj[name] = typeof obj[name] !== 'object' ? {} : obj[name];
-            obj = obj[name];
+      if (isSpecial(json[item])) {
+        let selvar;
+        const value = json[item];
+        if (selvar = isSelector(value)) {
+          json[item] = document.querySelector(selvar).value;
+        } else if (selvar = isVariable(value)) {
+          value = window[selvar];
+        } else if (selvar = isArray(value)) {
+          // collect array from DOM following the `originalDataAttribute` as rootscope
+          const children = element.querySelectorAll(selvar);
+          value = [];
+          for (let i_c = 0, c; c = children[i_c++];) {
+            const json_da_child = JsonDA.data(c, originalDataAttribute.join('.'));
+            value.push(json_da_child);
           }
         }
       }
-    }
 
 
-    return namespace ? (function () {
-      const keys = namespace.split('.'); let k; let
-        o = json;
-      while (o && (k = keys.shift())) {
-        o = o[k];
+      if (namespace !== '' && item.match(namespace)) {
+        namespace.split('.').forEach((objectProperty) => {
+          const newPropertyName = item.replace(objectProperty, '').toLowerCase();
+          if (!has.call(json, objectProperty)) {
+            Object.defineProperty(json, objectProperty, {
+              writable: true,
+              enumerable: true,
+              value: {},
+            });
+          }
+          if (!has.call(json[objectProperty], newPropertyName)) {
+            Object.defineProperty(json[objectProperty], newPropertyName, {
+              writable: true,
+              enumerable: true,
+              value: {},
+            });
+          }
+          json[objectProperty][newPropertyName] = json[item];
+          delete json[item];
+        });
       }
-      while (keys.length > 1 && (k = keys.shift())) {
-        o = o[k] = {};
-      }
-      return o;
-    }()) : json;
+    });
   },
 
 };
+
+export default JsonDA;
