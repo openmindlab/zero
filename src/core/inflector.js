@@ -7,9 +7,10 @@ import startCase from 'lodash/startCase';
 import capitalize from 'lodash/capitalize';
 import lowerFirst from 'lodash/lowerFirst';
 
-
-export default {
-
+/**
+ * Inflector is an utility to manipulate strings
+ */
+const Inflector = {
   uncountableWords: [
     'equipment', 'information', 'rice', 'money', 'species', 'series',
     'fish', 'sheep', 'moose', 'deer', 'news',
@@ -306,3 +307,4 @@ export default {
     return originalString;
   },
 };
+export default Inflector;

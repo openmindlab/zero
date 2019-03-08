@@ -1,158 +1,212 @@
-# Project `Zero`
+<a name="Inflector"></a>
 
-##### Contribute
+## Inflector
+Inflector is an utility to manipulate strings
 
-Make sure you're using `nvm` as node environment. Otherwise check it on [nvm](https://github.com/creationix/nvm)
-Make sure you have installed brew. Otherwise check it on [Homebrew](https://brew.sh/index_it.html)
+**Kind**: global constant  
 
-```sh
-git clone ssh://git@stash.openmindonline.it:7999/oc/zero.git
-cd zero
-nvm use
-npm install -g npm
-brew install yarn --without-node
-yarn install
-yarn dev
-```
+* [Inflector](#Inflector)
+    * [.cleanString(str)](#Inflector.cleanString) ⇒ [<code>string</code>](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String)
+    * [.pluralize(str, plural)](#Inflector.pluralize) ⇒ [<code>string</code>](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String)
+    * [.singularize(str, singular)](#Inflector.singularize)
+    * [.camelize()](#Inflector.camelize) ⇒ [<code>string</code>](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String)
+    * [.underscore()](#Inflector.underscore) ⇒ [<code>string</code>](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String)
+    * [.humanize(str, [lowFirstLetter])](#Inflector.humanize) ⇒ [<code>string</code>](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String)
+    * [.capitalize(str)](#Inflector.capitalize) ⇒ [<code>string</code>](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String)
+    * [.dasherize()](#Inflector.dasherize) ⇒ [<code>string</code>](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String)
+    * [.demodulize(str)](#Inflector.demodulize) ⇒ [<code>string</code>](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String)
+    * [.tableize(str)](#Inflector.tableize) ⇒ [<code>string</code>](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String)
+    * [.classify(str)](#Inflector.classify) ⇒ [<code>string</code>](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String)
+    * [.foreignKey(str, [dropIdUbar])](#Inflector.foreignKey) ⇒ [<code>string</code>](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String)
+    * [.ordinalize(str)](#Inflector.ordinalize) ⇒ [<code>string</code>](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String)
 
+<a name="Inflector.cleanString"></a>
 
-# Components
-_Components_ are the beating heart of `Zero`. They have all functionalities to make HTML page works properly.
-They are plug-and-play javascript class which will be auto-instantiated by `Zero` based on _data-component_ HTML attribute. Each component will be instantiated for each HTML element that has _data-component_ attribute.
-Each HTML element can be handled by one or more _Component_.
-NOTE: _Component_ must not use `$` to select HTML elements out of its related HTML element.
+### Inflector.cleanString(str) ⇒ [<code>string</code>](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String)
+Clean given string and remove spaces and new-lines from string
 
-_Components_ can emit/grab messages in order to comunicate eachother and with the _Page_ (see Pages)
+**Kind**: static method of [<code>Inflector</code>](#Inflector)  
 
-##### Under the hood
-Each _component_ has utility methods and properties:
-- _get_ `element` returns the HTML element handled by this component. Note: it is an instance of Zero.Dom (such as jQuery)
-- _get_ `data` returns a JSON object representing its _data-attribute_ parsed by JsonDA utility (see Utilities)
-- `CAST` method that wraps `Broadcast.cast` method
-- `GRAB` method that wraps `Broadcast.grab` method
+| Param | Type |
+| --- | --- |
+| str | [<code>string</code>](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String) | 
 
+<a name="Inflector.pluralize"></a>
 
-##### Create Component
-Create your javascript file in the `components` folder and import it into your _main javascript manifest_ file, such as follow.
-NOTE: each component has to be added to _main components collection_ in order to be able to handle its HTML elements.
+### Inflector.pluralize(str, plural) ⇒ [<code>string</code>](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String)
+Returns the plural string for given singular
+
+**Kind**: static method of [<code>Inflector</code>](#Inflector)  
+
+| Param | Type |
+| --- | --- |
+| str | [<code>string</code>](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String) | 
+| plural | [<code>string</code>](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String) | 
+
+**Example**  
 ```js
-// file: components/my-magic-component.js
-import {Components} from 'Zero';
-export default class MyMagicComponent extends Components {
-    constructor(element) {
-        super(element);
-        // my component has been instantiated and is ready to do magic
-    }
-}
+Inflector.pluralize('person')           -> 'people'
+Inflector.pluralize('octopus')          -> 'octopi'
+Inflector.pluralize('Hat')              -> 'Hats'
+Inflector.pluralize('person', 'guys')   -> 'guys'
 ```
+<a name="Inflector.singularize"></a>
+
+### Inflector.singularize(str, singular)
+Returns the singular string for given plural
+
+**Kind**: static method of [<code>Inflector</code>](#Inflector)  
+
+| Param | Type |
+| --- | --- |
+| str | [<code>string</code>](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String) | 
+| singular | [<code>string</code>](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String) | 
+
+**Example**  
 ```js
-// file: main-manifest.js
-import {Zero, Components} from 'Zero';
-import MyMagicComponent from './components/my-magic-component.js';
-// add my-magic-component to main components collection
-Components.create("MyMagicComponent", MyMagicComponent);
-// start Zero
-Zero.start();
+Inflector.singularize('person')         -> 'person'
+Inflector.singularize('octopi')         -> 'octopus'
+Inflector.singularize('hats')           -> 'hat'
+Inflector.singularize('guys', 'person') -> 'person'
 ```
-##### Use component
-In your HTML page just add the `data-component` attribute to make the magic starts.
-```html
-<div id="my_id" class="my-class" data-component="MyMagicComponent" >
-    <label>This element has been wrapper by my magic-component</label>
-    <button class="my-button">Click me</button>
-    <p id="my-hidden-message" style="display: none">This is a hidden message</p>
-</div>
-```
+<a name="Inflector.camelize"></a>
 
+### Inflector.camelize() ⇒ [<code>string</code>](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String)
+Returns the string in camel case
 
-
-
-# Dynamic Import of Components
-Create a file named `lazy-component.js` in your favourite folder and copy-n-paste this snippet.
-Make sure you have set the path correctly: replace the string `RELATIVE_PATH_OF_YOUR_DYNAMIC_COMPONENT` with your relative path to your dynamic components
+**Kind**: static method of [<code>Inflector</code>](#Inflector)  
+**See**: https://lodash.com/docs/4.17.10#camelCase  
+**Example**  
 ```js
-import {Components} from 'Zero';
-
-export default function LazyComponent(name) {
-
-  const names = name.split('/');
-  name = names[0];
-
-  class LazyComponent extends Components {
-    constructor(element) {
-      super(element);
-
-      const self = this;
-
-      import(/* webpackChunkName: `[request]` */ `{RELATIVE_PATH_OF_YOUR_DYNAMIC_COMPONENT}/${name.toLowerCase()}`).then( (module) => {
-        const comp = module[names[1] || 'default'];
-
-        comp.prototype.__defineGetter__('Name', ()  => self.Name);
-        const C = new comp( element );
-        self.destroy = self.destroy.bind(C);
-
-      });
-
-    }
-  }
-  return LazyComponent;
-}
+{'Foo Bar' => 'fooBar'}
 ```
+<a name="Inflector.underscore"></a>
 
-Add custom section in your webpack configuration:
+### Inflector.underscore() ⇒ [<code>string</code>](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String)
+Returns the string in snake case
+
+**Kind**: static method of [<code>Inflector</code>](#Inflector)  
+**See**: https://lodash.com/docs/4.17.10#snakeCase  
+**Example**  
 ```js
-output: {
-  chunkFilename: "component-[name].dev.js"
-}
+{'Foo Bar' => 'foo_bar'}
 ```
+<a name="Inflector.humanize"></a>
 
-In order to use LazyComponent with Zero you have to do something as follow:
+### Inflector.humanize(str, [lowFirstLetter]) ⇒ [<code>string</code>](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String)
+Returns the human readable string
+
+**Kind**: static method of [<code>Inflector</code>](#Inflector)  
+**See**: https://lodash.com/docs/4.17.10#startCase  
+
+| Param | Type | Default | Description |
+| --- | --- | --- | --- |
+| str | [<code>string</code>](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String) |  |  |
+| [lowFirstLetter] | [<code>boolean</code>](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean) | <code>false</code> | set to true if the first word must be lowercase |
+
+**Example**  
 ```js
-import LazyComponent from 'path/to/lazy-component.js';
-
-...
-Component.create('MyComponentName', LazyComponent('MyComponentFileName') );
-...
-
-Zero.start()
+{'--foo-bar--' >= 'Foo Bar'}
 ```
+<a name="Inflector.capitalize"></a>
 
+### Inflector.capitalize(str) ⇒ [<code>string</code>](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String)
+Returns the string with ONLY the first character to upper case and the remaining to lower case.
 
-### Work with Zero
-#### Creating component
+**Kind**: static method of [<code>Inflector</code>](#Inflector)  
+**See**: https://lodash.com/docs/4.17.11#capitalize  
 
-In your project go to 'javascripts' folder and create `components` folder.
+| Param | Type |
+| --- | --- |
+| str | [<code>string</code>](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String) | 
 
-Create a new file as follow:
-```sh
-my_new_compoent.js
-```
-
-Copy this code in order to quickly start using it
+**Example**  
 ```js
-import {Logger, Zero, Components, Utils} from 'Zero'
-
-const Log = new Logger('MyComponentName');
-
-export default class MyComponentName extends Components {
-
-  get Messages() {
-    return {
-      "Message:To:Handle": this.onMessageReceived
-    }
-  }
-
-  constructor(element) {
-    super(element)
-  }
-
-  onMessageReceived() {
-    // TODO: do something awesome
-  }
-
-}
-
+{'foo BAR' >= 'Foo bar'}
 ```
+<a name="Inflector.dasherize"></a>
 
+### Inflector.dasherize() ⇒ [<code>string</code>](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String)
+Returns the string in kebab case
 
-### Enjoy ;)
+**Kind**: static method of [<code>Inflector</code>](#Inflector)  
+**See**: https://lodash.com/docs/4.17.10#kebabCase  
+**Example**  
+```js
+{'Foo Bar' => 'foo-bar'}
+```
+<a name="Inflector.demodulize"></a>
+
+### Inflector.demodulize(str) ⇒ [<code>string</code>](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String)
+?
+
+**Kind**: static method of [<code>Inflector</code>](#Inflector)  
+
+| Param | Type |
+| --- | --- |
+| str | [<code>string</code>](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String) | 
+
+**Example**  
+```js
+Inflector.demodulize('Message::Bus::Properties')    -> 'Properties'
+```
+<a name="Inflector.tableize"></a>
+
+### Inflector.tableize(str) ⇒ [<code>string</code>](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String)
+?
+
+**Kind**: static method of [<code>Inflector</code>](#Inflector)  
+
+| Param | Type |
+| --- | --- |
+| str | [<code>string</code>](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String) | 
+
+**Example**  
+```js
+Inflector.tableize('MessageBusProperty')    -> 'message_bus_properties'
+```
+<a name="Inflector.classify"></a>
+
+### Inflector.classify(str) ⇒ [<code>string</code>](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String)
+?
+
+**Kind**: static method of [<code>Inflector</code>](#Inflector)  
+
+| Param | Type |
+| --- | --- |
+| str | [<code>string</code>](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String) | 
+
+**Example**  
+```js
+Inflector.classify('message_bus_properties')    -> 'MessageBusProperty'
+```
+<a name="Inflector.foreignKey"></a>
+
+### Inflector.foreignKey(str, [dropIdUbar]) ⇒ [<code>string</code>](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String)
+?
+
+**Kind**: static method of [<code>Inflector</code>](#Inflector)  
+
+| Param | Type | Default |
+| --- | --- | --- |
+| str | [<code>string</code>](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String) |  | 
+| [dropIdUbar] | [<code>boolean</code>](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean) | <code>false</code> | 
+
+**Example**  
+```js
+Inflector.foreignKey('MessageBusProperty')       -> 'message_bus_property_id'
+Inflector.foreignKey('MessageBusProperty', true) -> 'message_bus_propertyid'
+```
+<a name="Inflector.ordinalize"></a>
+
+### Inflector.ordinalize(str) ⇒ [<code>string</code>](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String)
+**Kind**: static method of [<code>Inflector</code>](#Inflector)  
+
+| Param | Type |
+| --- | --- |
+| str | [<code>string</code>](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String) | 
+
+**Example**  
+```js
+Inflector.ordinalize('the 1 pitch')     -> 'the 1st pitch'
+```
