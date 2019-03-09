@@ -4,7 +4,7 @@ function isSpecial(value) {
   return value.match(/^(sel|var|ary):(.+)$/);
 }
 /**
- * Returns the HtmlElement data attributes as object
+ * Returns the HtmlElement data attributes in object notation
  * If a key is given it will group each data with keys
  * @example
  * <div data-foo-name="foo" data-foo-age="16">Foo</div>

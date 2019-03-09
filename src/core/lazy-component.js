@@ -10,11 +10,12 @@ export default function LazyComponent(name) {
 
       import(/* webpackChunkName: `[request]` */ `../components/${name.toLowerCase()}`).then( (module) => {
         const comp = module.default;
-
-        comp.prototype.__defineGetter__('Name', ()  => self.Name);;
+        Object.defineProperty(comp, 'Name', {
+          enumerable:true,
+          value:self.Name
+        })
         const C = new comp( element );
         self.destroy = self.destroy.bind(C);
-
       });
 
     }
