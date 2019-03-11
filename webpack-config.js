@@ -1,11 +1,11 @@
 const Path = require('path');
-const PathConfig = require("./path-config");
 const Webpack = require('webpack');
+const PathConfig = require('./path-config');
 
-const Package = require("./package.json");
+const Package = require('./package.json');
 
 const ENTRIES = {
-  zero: "./src/views/manifest.js"
+  zero: './sample/manifest.js',
 };
 
 module.exports = {
@@ -15,52 +15,52 @@ module.exports = {
   // devtool: 'eval',
   watch: true,
 
-  entry:  ENTRIES,
+  entry: ENTRIES,
 
   module: {
-    rules: [
-      {
-        test: /\.js$/,
-        exclude: /(node_modules)/,
-        use: {
-          loader: 'babel-loader',
-          options: {
-            presets: ['env']
-          }
-        }
-      }
-    ]
+    rules: [{
+      test: /\.js$/,
+      exclude: /(node_modules)/,
+      use: {
+        loader: 'babel-loader',
+        options: {
+          presets: ['@babel/preset-env'],
+        },
+      },
+    }],
   },
 
   plugins: [
     new Webpack.DefinePlugin({
-        'process.env': {
-            VERSION: `'${Package.version}'`
-        }
-    })
+      'process.env': {
+        VERSION: `'${Package.version}'`,
+      },
+    }),
   ],
 
   output: {
-    filename: "[name].dev.js",
+    filename: '[name].dev.js',
     path: Path.resolve(__dirname, 'build'),
     pathinfo: true,
-    sourceMapFilename: "[file].js.map",
-    chunkFilename: "component-[name].dev.js"
+    sourceMapFilename: '[file].js.map',
+    chunkFilename: 'component-[name].dev.js',
   },
 
   devServer: {
-    contentBase: Path.join(__dirname, "./build"),
+    contentBase: Path.join(__dirname, './build'),
     compress: false,
     port: 3000,
     hot: false,
-    before: function(App, server) {
+    disableHostCheck: true,
+    before(App) {
       App.set('view engine', 'pug');
-      App.set('views', './src/views');
+      App.set('views', './sample/');
 
-      App.get("/", (req, res, next) => {
-        res.render("home", {components: PathConfig.Components});
+      App.get('/', (req, res) => {
+        res.render('home', {
+          components: PathConfig.Components,
+        });
       });
-
-    }
-  }
+    },
+  },
 };

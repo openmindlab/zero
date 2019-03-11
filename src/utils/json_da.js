@@ -1,13 +1,15 @@
 const has = Object.prototype.hasOwnProperty;
 
 function isSpecial(value) {
-  return value.match(/^(sel|var|ary):(.+)$/);
+  const regex = new RegExp(/^(sel|var|ary):(.+)$/);
+  return regex.test(value);
 }
 /**
  * Returns the HtmlElement data attributes in object notation
  * If a key is given it will group each data with keys
  * @example
  * <div data-foo-name="foo" data-foo-age="16">Foo</div>
+ *
  */
 const JsonDA = {
 
@@ -26,6 +28,7 @@ const JsonDA = {
         enumerable: true,
         value: itemdata,
       });
+      return itemdata;
     }
     return element[`__data_${key}`];
   },
@@ -64,25 +67,14 @@ const JsonDA = {
             json[item] = window[specialValues[2]];
             break;
           case 'ary':
-
+            /* for (let i_c = 0, c;c = children[ i_c++ ];) {
+              const json_da_child = JsonDA.data(c, originalDataAttribute.join('.'));
+              value.push(json_da_child);
+            } */
             break;
           default:
         }
-        /* if (selvar = isSelector(value)) {
-          json[item] = document.querySelector(selvar).value;
-        } else if (selvar = isVariable(value)) {
-          value = window[selvar];
-        } else if (selvar = isArray(value)) {
-          // collect array from DOM following the `originalDataAttribute` as rootscope
-          const children = element.querySelectorAll(selvar);
-          value = [];
-          for (let i_c = 0, c; c = children[i_c++];) {
-            const json_da_child = JsonDA.data(c, originalDataAttribute.join('.'));
-            value.push(json_da_child);
-          }
-        } */
       }
-
 
       if (namespace !== '' && item.match(namespace)) {
         namespace.split('.').forEach((objectProperty) => {
@@ -105,8 +97,8 @@ const JsonDA = {
           delete json[item];
         });
       }
-      return json;
     });
+    return json;
   },
 
 };
