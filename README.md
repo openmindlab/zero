@@ -1,3 +1,37 @@
+## Constants
+
+<dl>
+<dt><a href="#Broadcast">Broadcast</a></dt>
+<dd><p>Create a Broadcast object to dispatch/listen messages through the application</p>
+</dd>
+<dt><a href="#Inflector">Inflector</a></dt>
+<dd><p>Inflector is an utility to manipulate strings</p>
+</dd>
+<dt><a href="#JsonDA">JsonDA</a></dt>
+<dd><p>Returns the HtmlElement data attributes in object notation
+If a key is given it will group each data with keys</p>
+</dd>
+</dl>
+
+## Functions
+
+<dl>
+<dt><a href="#cast">cast(msg, obj, immediate)</a></dt>
+<dd></dd>
+<dt><a href="#grab">grab(msg, callback)</a></dt>
+<dd></dd>
+<dt><a href="#ungrab">ungrab(msg, callback)</a></dt>
+<dd></dd>
+<dt><a href="#start">start()</a></dt>
+<dd></dd>
+</dl>
+
+<a name="Broadcast"></a>
+
+## Broadcast
+Create a Broadcast object to dispatch/listen messages through the application
+
+**Kind**: global constant  
 <a name="Inflector"></a>
 
 ## Inflector
@@ -210,3 +244,74 @@ Inflector.foreignKey('MessageBusProperty', true) -> 'message_bus_propertyid'
 ```js
 Inflector.ordinalize('the 1 pitch')     -> 'the 1st pitch'
 ```
+<a name="JsonDA"></a>
+
+## JsonDA
+Returns the HtmlElement data attributes in object notation
+If a key is given it will group each data with keys
+
+**Kind**: global constant  
+**Example**  
+```js
+<div data-foo-name="foo" data-foo-age="16">Foo</div>
+```
+
+* [JsonDA](#JsonDA)
+    * [.data(element, key)](#JsonDA.data) ⇒ [<code>object</code>](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object)
+    * [.nsData(element, namespace)](#JsonDA.nsData) ⇒ [<code>object</code>](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object)
+
+<a name="JsonDA.data"></a>
+
+### JsonDA.data(element, key) ⇒ [<code>object</code>](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object)
+**Kind**: static method of [<code>JsonDA</code>](#JsonDA)  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| element | [<code>HtmlElement</code>](https://developer.mozilla.org/docs/Web/HTML/Element) | the HtmlElement |
+| key | [<code>string</code>](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String) |  |
+
+<a name="JsonDA.nsData"></a>
+
+### JsonDA.nsData(element, namespace) ⇒ [<code>object</code>](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object)
+**Kind**: static method of [<code>JsonDA</code>](#JsonDA)  
+
+| Param | Type |
+| --- | --- |
+| element | [<code>HTMLElement</code>](https://developer.mozilla.org/docs/Web/HTML/Element) | 
+| namespace | [<code>string</code>](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String) | 
+
+<a name="cast"></a>
+
+## cast(msg, obj, immediate)
+**Kind**: global function  
+
+| Param | Type |
+| --- | --- |
+| msg | [<code>string</code>](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String) | 
+| obj | [<code>object</code>](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object) | 
+| immediate | [<code>boolean</code>](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean) | 
+
+<a name="grab"></a>
+
+## grab(msg, callback)
+**Kind**: global function  
+
+| Param | Type |
+| --- | --- |
+| msg | [<code>string</code>](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String) | 
+| callback | [<code>function</code>](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Statements/function) | 
+
+<a name="ungrab"></a>
+
+## ungrab(msg, callback)
+**Kind**: global function  
+
+| Param | Type |
+| --- | --- |
+| msg | [<code>string</code>](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String) | 
+| callback | [<code>function</code>](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Statements/function) | 
+
+<a name="start"></a>
+
+## start()
+**Kind**: global function  

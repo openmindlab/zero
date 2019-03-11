@@ -59,6 +59,6 @@
     "dev": "webpack-dev-server --config webpack-config.js",
     "build": "webpack --config webpack-prod.js",
     "test": "jest --coverage",
-    "docs": "jsdoc2md --plugin dmd-globals-docs --files src/core/inflector.js > README.md"
+    "docs": "jsdoc2md --files ./src/**/*.js --plugin dmd-globals-docs > README.md"
   }
 }
