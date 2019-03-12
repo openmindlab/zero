@@ -49,4 +49,20 @@ describe('JsonDa will retrun [data-attributes] in object notation', () => {
     const myCachedObject = element.__data_component;
     expect(myCachedObject).toMatchObject(expected);
   });
+  test('if data attribute has a special value it will be set as request', () => {
+    const element = document.createElement('div');
+    element.setAttribute('data-component-name', 'MyComponent');
+    element.setAttribute('data-component-version', '1.0.0');
+    element.setAttribute('data-component-deployed', 'true');
+    const jsonDaObject = JsonDA.data(element, 'component');
+    const expected = {
+      component: {
+        name: 'MyComponent',
+        version: '1.0.0',
+        deployed: true,
+      },
+    };
+    const myCachedObject = element.__data_component;
+    expect(myCachedObject).toMatchObject(expected);
+  });
 });

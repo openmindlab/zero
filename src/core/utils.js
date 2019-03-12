@@ -1,7 +1,5 @@
-import Logger from '@openmind/litelog';
-import Inflector from './inflector';
+import Inflector from '../utils/inflector';
 
-const Log = new Logger('Zero/Core/Utils');
 const has = Object.prototype.hasOwnProperty;
 
 const Util = {
@@ -24,7 +22,6 @@ const Util = {
       throw new Error(`${utilityName} has already been created`);
     }
     this.collection.set(utilityName, util);
-    Log.d(`${utilityName} has been created`);
     return this.collection;
   },
 

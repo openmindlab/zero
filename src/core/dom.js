@@ -1,16 +1,22 @@
 import Events from '@openmind/zero-events';
 import JsonDa from '../utils/json_da';
-import Inflector from './inflector';
+import Inflector from '../utils/inflector';
 
 class DOM {
+  /**
+   *
+   * @param {*} selector
+   * @param {*} root
+   */
   constructor(selector, root = document) {
     this.root = root;
 
-    let selection = [];
+    const selection = [];
 
     if (selector instanceof DOM) {
       return selector;
-    } if (typeof selector === 'string') {
+    }
+    /* if (typeof selector === 'string') {
       selector = Inflector.cleanString(selector);
       if (selector.startsWith('<')) {
         // parse HTML as new content;
@@ -24,11 +30,11 @@ class DOM {
     } else if (selector) {
       // try to translate HTMLCollection/NodeList
       selection = Array.prototype.slice.call(selector, 0);
-    }
+    } */
 
-    for (let i = 0, elm; elm = selection[i]; i++) {
+    /* for (let i = 0, elm; elm = selection[i]; i++) {
       this[i] = elm;
-    }
+    } */
     this.length = selection.length;
 
     this[Symbol.iterator] = selection[Symbol.iterator];
@@ -79,7 +85,7 @@ class DOM {
     return ret;
   }
 
-  html(str) {
+  /* html(htmlString = '') {
     if (typeof str === 'undefined') {
       return this[0].innerHTML;
     }
@@ -89,13 +95,29 @@ class DOM {
     }
 
     return this;
+  } */
+
+  get html() {
+    return this[0].innerHTML;
+  }
+
+  set html(htmlString = '') {
+    this[0].innerHTML = htmlString;
+  }
+
+  get text() {
+    return this[0].innerText;
+  }
+
+  set text(textString = '') {
+
   }
 
   empty() {
-    return this.html('');
+    this.innerHTML = '';
   }
 
-  text(str) {
+  /* text(str) {
     if (typeof str === 'undefined') {
       return this[0].innerText;
     }
@@ -107,7 +129,7 @@ class DOM {
     }
 
     return this;
-  }
+  } */
 
   append(elm) {
     if (!(elm instanceof DOM)) {

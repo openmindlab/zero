@@ -1,15 +1,14 @@
 import Logger from '@openmind/litelog';
 import Events from '@openmind/zero-events';
 
-const Log = new Logger('Zero/Core/Broadcast');
-
+const has = Object.prototype.hasOwnProperty;
 let started = false;
 const stack = [];
 const applicationBroadcast = new Events({});
 /**
  * Create a Broadcast object to dispatch/listen messages through the application
  */
-const Broadcast = Object.create({
+const Broadcast = {
   /**
    *
    * @param {string} msg
@@ -18,17 +17,17 @@ const Broadcast = Object.create({
    */
   cast(msg, obj, immediate) {
     if (!started) {
-      stack.push({ msg, obj, immediate });
+      stack.push({
+        msg,
+        obj,
+        immediate,
+      });
+    } else if (immediate) {
+      applicationBroadcast.trigger(`msg:${msg}`, obj);
     } else {
-      Log.d('casting', msg);
-      // New process in order to avoid duplicate setting properties in React mode
-      if (immediate) {
+      setTimeout(() => {
         applicationBroadcast.trigger(`msg:${msg}`, obj);
-      } else {
-        setTimeout(() => {
-          applicationBroadcast.trigger(`msg:${msg}`, obj);
-        }, 0);
-      }
+      }, 0);
     }
   },
   /**
@@ -37,13 +36,18 @@ const Broadcast = Object.create({
    * @param {Function} callback
    */
   grab(msg, callback) {
-    Log.d('grabbing', msg);
-    callback.__Ref__ = (obj) => {
+    /* callback.__Ref__ = (obj) => {
       obj = obj || {};
       obj.__msg__ = msg;
       callback(obj);
-    };
-    applicationBroadcast.on(`msg:${msg}`, callback.__Ref__);
+    }; */
+    if (!has.call(callback, '__msg__')) {
+      Object.defineProperty(callback, '__msg__', {
+        value: msg,
+        enumerable: true,
+      });
+    }
+    applicationBroadcast.on(`msg:${msg}`, callback);
   },
   /**
    *
@@ -51,7 +55,6 @@ const Broadcast = Object.create({
    * @param {Function} callback
    */
   ungrab(msg, callback) {
-    Log.d('ungrabbing', msg);
     applicationBroadcast.off(`msg:${msg}`, callback);
   },
   /**
@@ -65,6 +68,6 @@ const Broadcast = Object.create({
     }
   },
 
-});
+};
 
 export default Broadcast;

@@ -1,4 +1,4 @@
-import Inflector from '../../src/core/inflector';
+import Inflector from '../../src/utils/inflector';
 
 describe('Inflector returns specified values', () => {
   test('clean string with Inflector.clean(string)', () => {

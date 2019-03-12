@@ -1,10 +1,10 @@
-import Logger from '@openmind/litelog';
 import Events from '@openmind/zero-events';
 import Broadcast from './broadcast';
 import App from './app';
 import JsonDa from '../utils/json_da';
 
-const Log = new Logger('Zero/Core/Components');
+
+const has = Object.prototype.hasOwnProperty;
 
 const $comps = {};
 
@@ -23,15 +23,11 @@ export default class Components extends Events {
   }
 
   get Messages() {
-    return {};
-  }
-
-  get element() {
-    return this.$element;
+    return this.messages;
   }
 
   get data() {
-    return JsonDa.data(this.element[0], this.Name.toLowerCase()) || {};
+    return JsonDa.data(this.eventTarget, this.Name.toLowerCase()) || {};
   }
 
   static create(name, component) {
@@ -52,7 +48,6 @@ export default class Components extends Events {
     }
 
     if (!proto) {
-      Log.w('Component', name, 'cannot be created');
       return false;
     }
 
@@ -69,59 +64,52 @@ export default class Components extends Events {
         return name;
       },
     });
-
-    Log.d(`${name} has been created`);
-
     return component;
   }
 
 
-  GRAB(msg, fn) {
-    fn.__Ref__ = fn.bind(this);
-    Broadcast.grab(msg, fn.__Ref__);
+  GRAB(message, callback) {
+    callback.__Ref__ = callback.bind(this);
+    Broadcast.grab(message, callback.__Ref__);
   }
 
-  CAST(msg, obj, immediate) {
-    Broadcast.cast(msg, obj, immediate);
+  CAST(message, obj, immediate) {
+    Broadcast.cast(message, obj, immediate);
   }
 
-  UNGRAB(msg, fn) {
-    fn = fn && fn.__Ref__;
-    Broadcast.ungrab(msg, fn);
+  UNGRAB(message, callback) {
+    callback = callback && callback.__Ref__;
+    Broadcast.ungrab(message, callback);
   }
 
 
   constructor(element) {
-    super({});
-
+    super(element);
     this.$element = App.Dom(element);
-
-    const msgs = this.Messages;
-
-    const { react } = this;
-    const new_react = App.Manager.wrap(this, react);
+    const {
+      react,
+    } = this;
+    const newReact = App.Manager.wrap(this, react);
     delete this.react;
-    this.__defineGetter__('react', () => new_react);
-
-    for (const msg in msgs) {
-      if (msgs.hasOwnProperty(msg)) { this.GRAB(msg, msgs[msg]); }
-    }
-
-    Log.d('initializing', this.Name, this);
-    setTimeout(() => {
-      App.Events.trigger(Components.Events.Init, this);
-    }, 0);
+    Object.defineProperty(this, 'react', {
+      value: () => newReact,
+      enumerable: true,
+    });
+    Object.keys(this.Messages).forEach((message) => {
+      if (has.call(this.Messages, message)) {
+        this.GRAB(message, this.Messages[message]);
+      }
+    });
+    App.Events.trigger(Components.Events.Init, this);
   }
 
   destroy() {
     App.Manager.unwrap(this, this.react);
-
-    for (const msg in this.Messages) {
-      if (this.Messages.hasOwnProperty(msg)) { this.UNGRAB(msg, this.Messages[msg]); }
-    }
-
-    Log.d('destroyed', this, 'on', this.$element);
-
+    Object.keys(this.Messages).forEach((message) => {
+      if (has.call(this.Messages, message)) {
+        this.UNGRAB(message, this.Messages[message]);
+      }
+    });
     App.Events.trigger(Components.Events.Destroy, this);
   }
 }
